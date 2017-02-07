@@ -1,0 +1,100 @@
+<div ng-show = "nodeMode">
+	<h3>Jenkins Server List:</h3>
+	
+	<table id="employeeTable" datatable="ng" class="table table-striped table-bordered">
+		<thead>
+		<tr>
+			<th>Project Name</th>
+			<th>Description</th>
+			<th>Running</th>			
+		    <th></th>
+		</tr>
+		</thead>
+		<tbody>
+		
+		<tr ng-repeat = "node in nodes">
+			<td>{{node.projectName}}</td>
+			<td>{{node.description}}</td>
+			<td>{{node.running}}</td>
+			<td>				
+				<input type="button" value="View" class="btn btn-info" ng-show="node.running" ng-click="getJenkinsHome(node.id)">				
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<div ng-show = "homeMode">
+	<h3>Build Jobs:</h3>
+	
+	<table id="jobTable" datatable="ng" class="table table-striped table-bordered">
+		<thead>
+		<tr>
+			<th width="30%">Job Name</th>
+			<th width="30%">Description</th>
+			<th width="20%">Status</th>			
+		    <th width="20%"></th>
+		</tr>
+		</thead>
+		<tbody>
+		
+		<tr ng-repeat = "job in jobs">
+			<td>{{job.name}}</td>
+			<td>{{job.description}}</td>
+			<td>
+				Last Build: #{{job.lastBuild.buildNumber}} <br/>
+				{{job.lastBuild.buildDate}} <br/>
+				{{job.lastBuild.status}}
+			</td>
+			<td>	
+			<input type="button" value="Build History" class="btn btn-info"  ng-click="getBuildHistory(job.name);">				
+
+				<br/><br/>
+			<input type="button" value="Start Build" class="btn btn-info"  ng-click="startBuild(job.name, job.lastBuild.buildNumber);">				
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<div ng-show = "buildListMode">
+	<h3>Build History:</h3>
+	
+	<table id="buildHistoryTable" datatable="ng" class="table table-striped table-bordered">
+		<thead>
+		<tr>
+			<th width="30%">Build #</th>
+			<th width="30%">Date/Time</th>
+			<th width="20%">Status</th>			
+		    <th width="20%"></th>
+		</tr>
+		</thead>
+		<tbody>
+		
+		<tr ng-repeat = "build in builds">
+			<td>{{build.buildNumber}}</td>
+			<td>{{build.buildDate}}</td>
+			<td>
+				{{build.status}}
+			</td>
+			<td>				
+
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<div ng-show = "buildMode">
+	<h3>Build Status:</h3>
+	
+	Build Number : {{runningBuild.buildNumber}}<br/>
+	Build Started at : {{runningBuild.buildDate}}<br/>
+	Build in Progress : {{runningBuild.running}}<br/>
+	Build Message : {{runningBuild.processMessage}}<br/>
+	Console Output:<br/>
+	
+	<pre>{{runningBuild.consoleOutput}}</pre>
+	
+</div>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app="EchoWebAppModule">
+<head>
+<meta charset="ISO-8859-1">
+<title>User Manager</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+ <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-animate.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-sanitize.min.js"></script>
+ <script src="lib/angular-strap.min.js"></script>
+ <script src="lib/angular-strap.tpl.min.js"></script>
+ <script src="lib/angular-datatables.min.js"></script>
+ <script src="lib/angular-datatables.bootstrap.min.js"></script>
+ <script src="lib/bootstrap.min.js"></script>
+
+ <script src="scripts/app.js"></script>
+ <script src="scripts/controllers/jenkinsnodes.js"></script>
+ 
+ 
+ <link rel="stylesheet" href="http://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.css">
+ <link rel="stylesheet" href="http://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css">
+ <link rel="stylesheet" href="css/datatables.bootstrap.min.css">
+ <link rel="stylesheet" href="css/angular-datatables.css">    
+ 
+ <!-- Theme CSS -->
+ <link href="css/creative.css" rel="stylesheet">
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top navbar-right" role="navigation" bs-navbar>
+		  <div class="navbar-header">
+		    <a class="navbar-brand" href="#">Menu</a>
+		  </div>
+		  <ul class="nav navbar-nav">
+		    <!-- li data-match-route="/home"><a href="#/home">Home</a></li-->
+		    <li data-match-route="/nodes"><a href="#/nodes">Jenkins Nodes</a></li>
+		    <!-- li data-match-route="/grids"><a href="#/grids">Grids</a></li-->
+		    <!-- li data-match-route="/form"><a href="#/form">Forms</a></li-->
+		  </ul>
+	</nav>	
+	
+	<section class="container content" style="padding-top:100px;height:100%;">
+	<h2>Jenkins Test Kiosk</h2>
+		<div id="content" ng-view></div>
+	</section>		
+</body>
+</html>

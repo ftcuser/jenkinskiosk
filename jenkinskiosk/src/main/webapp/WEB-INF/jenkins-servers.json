@@ -1,0 +1,25 @@
+[
+	{	"id":"1",
+		"projectName":"User Manager",
+		"description":"CI Server User Manager Project",
+		"serverUrl":"http://localhost:8888/jenkins",
+		"username":"admin",
+		"password":"c3381e7058f95115c72e2da032b60a78"
+	},
+	{
+		"id":"2",
+		"projectName":"Project 2",
+		"description":"Dummy Project 2",
+		"serverUrl":"http://localhost:8889/jenkins",
+		"username":"admin",
+		"password":"jenkins"
+	},
+	{
+		"id":"3",
+		"projectName":"Project 3",
+		"description":"Test Project 3",
+		"serverUrl":"http://localhost:8889/jenkins",
+		"username":"admin",
+		"password":"jenkins"
+	}
+]
