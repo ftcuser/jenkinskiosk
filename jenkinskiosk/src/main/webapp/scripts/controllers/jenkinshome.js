@@ -1,11 +1,24 @@
-angular.module('EchoWebAppModule').controller('jenkinsHomeController', function($scope, $http) {
-	
-	
-	  $http.get("servlet/listnodes")
-		.then(function(response){
-			$scope.nodes = response.data;
-			console.log(response.data);
+angular.module('EchoWebAppModule').controller('jenkinsHomeController', function($rootScope, $scope, $location, $http) {
+	    
+		$http.get("servlet/jenkinshome/" + $rootScope.projectId)
+		 	.then(function(response){
+		 		$scope.jobs = response.data;
 		});
+		
+		
+		$scope.getBuildHistory = function(jobName) {
+			$rootScope.jobName = jobName;			
+			$location.path('/buildlist');
+			$location.replace();
+	
+	  };
+	  
+	  $scope.startBuild = function(jobName, lastBuild) {
+			$rootScope.jobName = jobName;
+			$rootScope.lastBuild = lastBuild;
+			$location.path('/build');
+			$location.replace();
+	  };
 });
 
 

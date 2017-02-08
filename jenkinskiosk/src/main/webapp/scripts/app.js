@@ -13,9 +13,13 @@ angular.module("EchoWebAppModule", ["ngRoute", "ngAnimate", "ngSanitize", "mgcre
 				templateUrl: "views/jenkinshome.html",
 				controller: "jenkinsHomeController"
 			})
-			.when("/form", {
-				templateUrl: "views/form.html",
-				controller: "formController"
+			.when("/buildlist", {
+				templateUrl: "views/buildlist.html",
+				controller: "buildlistController"
+			})
+			.when("/build", {
+				templateUrl: "views/buildprocess.html",
+				controller: "buildController"
 			})
 			.otherwise ({
 				redirectTo: "/nodes"
