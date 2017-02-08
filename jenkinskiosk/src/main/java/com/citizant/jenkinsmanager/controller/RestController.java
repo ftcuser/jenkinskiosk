@@ -73,4 +73,13 @@ public class RestController extends AbstractController {
 		
 		return jenkinsService.getRunningBuild(projectId, jobName, lastBuild);
 	}
+	
+	@RequestMapping("/getbuilddetail/{projectId}/{jobName}/{buildNumber}")
+	@ResponseBody
+	public JenkinsBuild getJenkinsBuildDetail(@PathVariable String projectId, 
+			@PathVariable String jobName,
+			@PathVariable int buildNumber){		
+		
+		return jenkinsService.getBuildDetail(projectId, jobName, buildNumber);
+	}
 }

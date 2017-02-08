@@ -169,4 +169,30 @@ public class JenkinsServiceImpl implements JenkinsService {
 		}		
 		return build;
 	}
+	
+	public JenkinsBuild getBuildDetail(String projectId, String jobName, int buildNumber) {
+		JenkinsBuild build = new JenkinsBuild();
+		
+		if(this.nodes != null) {
+			for(JenkinsNode node : nodes) {
+				if(projectId.equals(node.getId())) {
+					try{
+						JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+						JobWithDetails jd = js.getJob(jobName);
+						BuildWithDetails bb = jd.getBuildByNumber(buildNumber).details();
+						build.setBuildNumber(buildNumber);
+						build.setStatus(bb.getResult().name());
+						build.setConsoleOutput(bb.getConsoleOutputHtml());
+						build.setBuildDate((new Date(bb.getTimestamp()).toString()));
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
+			}
+		}		
+		
+		return build;
+	}
 }

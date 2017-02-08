@@ -21,6 +21,10 @@ angular.module("EchoWebAppModule", ["ngRoute", "ngAnimate", "ngSanitize", "mgcre
 				templateUrl: "views/buildprocess.html",
 				controller: "buildController"
 			})
+			.when("/buildinfo", {
+				templateUrl: "views/buildinfo.html",
+				controller: "buildinfoController"
+			})
 			.otherwise ({
 				redirectTo: "/nodes"
 			});
