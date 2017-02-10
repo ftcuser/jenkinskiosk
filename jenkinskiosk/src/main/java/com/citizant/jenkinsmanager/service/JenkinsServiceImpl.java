@@ -36,6 +36,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 			List<com.citizant.jenkinsmanager.domain.JenkinsNode> jenkinsNodesList = jenkinsNodesDao.getNodes();
 			
 			//Check if the servers are running
+			nodes.clear();
 			for(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode : jenkinsNodesList) {
 				JenkinsNode node = mapJenkinsNodeToUI(jenkinsNode);
 				nodes.add(node);
@@ -208,5 +209,16 @@ public class JenkinsServiceImpl implements JenkinsService {
 		}		
 		
 		return build;
+	}
+
+	@Override
+	public void updateNode(JenkinsNode jenkinsNode) {
+		com.citizant.jenkinsmanager.domain.JenkinsNode node = new com.citizant.jenkinsmanager.domain.JenkinsNode();
+		node.setProjectName(jenkinsNode.getProjectName());
+		node.setDescription(jenkinsNode.getDescription());
+		node.setServerUrl(jenkinsNode.getServerUrl());
+		node.setUsername(jenkinsNode.getUsername());
+		node.setPassword(jenkinsNode.getPassword());
+		jenkinsNodesDao.save(node);
 	}
 }

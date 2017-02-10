@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -40,6 +41,13 @@ public class RestController extends AbstractController {
 	public  List<JenkinsNode> listJenkinsNodes(HttpServletRequest request){		
 		List<JenkinsNode> nodes = jenkinsService.getJenkinsNodes();
 		return nodes;
+	}
+	
+	@RequestMapping("/addNode")
+	@ResponseBody
+	public  List<JenkinsNode> addJenkinsNodes(@RequestBody JenkinsNode jenkinsNode){		
+		jenkinsService.updateNode(jenkinsNode);
+		return jenkinsService.getJenkinsNodes();
 	}
 
 	

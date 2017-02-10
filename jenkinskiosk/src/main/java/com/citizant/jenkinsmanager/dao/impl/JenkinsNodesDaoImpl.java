@@ -26,5 +26,4 @@ public class JenkinsNodesDaoImpl extends BaseDaoImpl implements JenkinsNodesDao 
 		}
 		return nodesList;
 	}
-
 }

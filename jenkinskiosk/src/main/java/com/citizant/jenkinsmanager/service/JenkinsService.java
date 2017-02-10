@@ -20,5 +20,7 @@ public interface JenkinsService {
 	public JenkinsBuild getRunningBuild(String projectId, String jobName, int lastBuild);
 	
 	public JenkinsBuild getBuildDetail(String projectId, String jobName, int buildNumber);
+
+	public void updateNode(JenkinsNode jenkinsNode);
 	
 }
