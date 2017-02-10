@@ -9,7 +9,7 @@ import com.citizant.jenkinsmanager.bean.JenkinsNode;
 
 public interface JenkinsService {
 	
-	public List<JenkinsNode> getJenkinsNodes(String configFile);
+	public List<JenkinsNode> getJenkinsNodes();
 	
 	public List<JenkinsJob> getJobList(String projectId);
 	

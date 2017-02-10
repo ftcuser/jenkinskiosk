@@ -9,9 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.citizant.jenkinsmanager.bean.JenkinsBuild;
 import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
+import com.citizant.jenkinsmanager.dao.JenkinsNodesDao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.offbytwo.jenkins.JenkinsServer;
@@ -23,19 +26,19 @@ import com.offbytwo.jenkins.model.JobWithDetails;
 
 public class JenkinsServiceImpl implements JenkinsService {
 	
-	protected List<JenkinsNode> nodes = null;
+	@Autowired
+	private JenkinsNodesDao jenkinsNodesDao;
+	protected List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
 
-	public List<JenkinsNode> getJenkinsNodes(String configFile) {
-		
-		ObjectMapper mapper = new ObjectMapper();
-		String json;
+	public List<JenkinsNode> getJenkinsNodes() {
 		
 		try {
-			json = new String(Files.readAllBytes(Paths.get(configFile)));
-			nodes = mapper.readValue(json, new TypeReference<List<JenkinsNode>>(){});
+			List<com.citizant.jenkinsmanager.domain.JenkinsNode> jenkinsNodesList = jenkinsNodesDao.getNodes();
 			
 			//Check if the servers are running
-			for(JenkinsNode node : nodes) {
+			for(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode : jenkinsNodesList) {
+				JenkinsNode node = mapJenkinsNodeToUI(jenkinsNode);
+				nodes.add(node);
 				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
 				node.setRunning(js.isRunning());
 			}
@@ -45,6 +48,17 @@ public class JenkinsServiceImpl implements JenkinsService {
 		}  
 		
 		return nodes;
+	}
+	
+	private JenkinsNode mapJenkinsNodeToUI(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode) {
+		JenkinsNode node = new JenkinsNode();
+		node.setId(jenkinsNode.getNodeId());
+		node.setProjectName(jenkinsNode.getProjectName());
+		node.setDescription(jenkinsNode.getDescription());
+		node.setServerUrl(jenkinsNode.getServerUrl());
+		node.setUsername(jenkinsNode.getUsername());
+		node.setPassword(jenkinsNode.getPassword());
+		return node;
 	}
 	
 	public List<JenkinsJob> getJobList(String projectId) {

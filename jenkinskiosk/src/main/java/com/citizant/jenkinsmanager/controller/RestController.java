@@ -38,8 +38,7 @@ public class RestController extends AbstractController {
 	@RequestMapping("/listnodes")
 	@ResponseBody
 	public  List<JenkinsNode> listJenkinsNodes(HttpServletRequest request){		
-		String serverConfig = request.getServletContext().getRealPath("/WEB-INF/jenkins-servers.json");
-		List<JenkinsNode> nodes = jenkinsService.getJenkinsNodes(serverConfig);
+		List<JenkinsNode> nodes = jenkinsService.getJenkinsNodes();
 		return nodes;
 	}
 
