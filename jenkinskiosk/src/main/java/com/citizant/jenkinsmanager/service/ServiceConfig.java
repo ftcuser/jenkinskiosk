@@ -9,4 +9,9 @@ public class ServiceConfig {
 	public JenkinsService jinkenService() {
 		return new JenkinsServiceImpl();
 	}
+	
+	@Bean
+	public JenkinsReportService reportService() {
+		return new JenkinsReportServiceImpl();
+	}
 }
