@@ -1,4 +1,4 @@
-package com.citiznat.jenkinsmanager.util;
+package com.citizant.jenkinsmanager.util;
 
 import hudson.cli.CLI;
 
