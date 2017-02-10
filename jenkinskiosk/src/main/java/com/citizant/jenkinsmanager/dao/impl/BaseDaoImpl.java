@@ -27,23 +27,7 @@ public class BaseDaoImpl implements BaseDao {
 	protected DynamoDBMapper mapper;
 	
 	public BaseDaoImpl(){
-		/*
-         * The ProfileCredentialsProvider will return your [default]
-         * credential profile by reading from the credentials file located at
-         * (~/.aws/credentials).
-         */
-        AWSCredentials credentials = null;
-        try {
-           credentials = new ProfileCredentialsProvider().getCredentials();
-      	
-        } catch (Exception e) {
-            throw new AmazonClientException(
-                    "Cannot load the credentials from the credential profiles file. " +
-                    "Please make sure that your credentials file is at the correct " +
-                    "location (~/.aws/credentials), and is in valid format.",
-                    e);
-        }
-        dynamoDB = new AmazonDynamoDBClient(credentials);
+        dynamoDB = new AmazonDynamoDBClient();
         mapper = new DynamoDBMapper(dynamoDB);
         try{
         	initDatabase() ; 
@@ -58,12 +42,12 @@ public class BaseDaoImpl implements BaseDao {
 		try {
 			
 			//Create User table
-            String tableName = "tbl_user";
+            String tableName = "Jenkins_Nodes";
 
             // Create a table with a primary hash key named 'name', which holds a string
             CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName)
-                .withKeySchema(new KeySchemaElement().withAttributeName("email").withKeyType(KeyType.HASH))
-                .withAttributeDefinitions(new AttributeDefinition().withAttributeName("email").withAttributeType(ScalarAttributeType.S))
+                .withKeySchema(new KeySchemaElement().withAttributeName("NodeID").withKeyType(KeyType.HASH))
+                .withAttributeDefinitions(new AttributeDefinition().withAttributeName("NodeID").withAttributeType(ScalarAttributeType.S))
                 .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
             // Create table if it does not exist yet
@@ -75,47 +59,6 @@ public class BaseDaoImpl implements BaseDao {
             DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
             TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
             log.debug("Table Description: " + tableDescription);
-
-            //Create Kudos table
-            tableName = "tbl_kudos";
-            
-            // Create a table with a primary hash key named 'name', which holds a string
-            createTableRequest = new CreateTableRequest().withTableName(tableName)
-                .withKeySchema(new KeySchemaElement().withAttributeName("id").withKeyType(KeyType.HASH))
-                .withAttributeDefinitions(new AttributeDefinition().withAttributeName("id").withAttributeType(ScalarAttributeType.S))
-                .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
-
-            // Create table if it does not exist yet
-            TableUtils.createTableIfNotExists(dynamoDB, createTableRequest);
-            // wait for the table to move into ACTIVE state
-            TableUtils.waitUntilActive(dynamoDB, tableName);
-
-            // Describe our new table
-            describeTableRequest = new DescribeTableRequest().withTableName(tableName);
-            tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
-            log.debug("Table Description: " + tableDescription);
-            
-            //create Kudo Category table
-            tableName = "kudo_category";
-            
-            // Create a table with a primary hash key named 'name', which holds a string
-            createTableRequest = new CreateTableRequest().withTableName(tableName)
-                .withKeySchema(new KeySchemaElement().withAttributeName("category_name").withKeyType(KeyType.HASH))
-                .withAttributeDefinitions(new AttributeDefinition().withAttributeName("category_name").withAttributeType(ScalarAttributeType.S))
-                .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
-
-            // Create table if it does not exist yet
-            TableUtils.createTableIfNotExists(dynamoDB, createTableRequest);
-            // wait for the table to move into ACTIVE state
-            TableUtils.waitUntilActive(dynamoDB, tableName);
-
-            // Describe our new table
-            describeTableRequest = new DescribeTableRequest().withTableName(tableName);
-            tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
-            log.debug("Table Description: " + tableDescription);
-            
-            //TODO: check to see if ref data exists in kudo_category table and if not, populate initial data
-
         } catch (AmazonServiceException ase) {
             log.error("Caught an AmazonServiceException, which means your request made it "
                     + "to AWS, but was rejected with an error response for some reason.");
