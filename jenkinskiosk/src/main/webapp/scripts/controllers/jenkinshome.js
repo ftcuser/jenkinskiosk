@@ -1,5 +1,10 @@
 angular.module('EchoWebAppModule').controller('jenkinsHomeController', function($rootScope, $scope, $location, $http) {
 	    
+		if($rootScope.projectId == null) {
+			$location.path('/');
+			$location.replace();
+		}
+	
 		$http.get("servlet/jenkinshome/" + $rootScope.projectId)
 		 	.then(function(response){
 		 		$scope.jobs = response.data;

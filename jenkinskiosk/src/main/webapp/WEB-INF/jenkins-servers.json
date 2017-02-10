@@ -1,6 +1,6 @@
 [
 	{	"id":"1",
-		"projectName":"User Manager",
+		"projectName":"Local CI Server for User Manager",
 		"description":"CI Server User Manager Project",
 		"serverUrl":"http://localhost:8888/jenkins",
 		"username":"admin",
@@ -8,18 +8,18 @@
 	},
 	{
 		"id":"2",
-		"projectName":"Project 2",
-		"description":"Dummy Project 2",
-		"serverUrl":"http://localhost:8889/jenkins",
+		"projectName":"FLASH CI Server",
+		"description":"CI Pipline Server for FLASH",
+		"serverUrl":"http://ec2-50-19-179-31.compute-1.amazonaws.com:8080",
 		"username":"admin",
 		"password":"jenkins"
 	},
 	{
 		"id":"3",
-		"projectName":"Project 3",
-		"description":"Test Project 3",
-		"serverUrl":"http://localhost:8889/jenkins",
+		"projectName":"Citizant CI Server",
+		"description":"CI Server on AWS EC2",
+		"serverUrl":"http://ec2-54-82-132-11.compute-1.amazonaws.com:8888/jenkins",
 		"username":"admin",
-		"password":"jenkins"
+		"password":"c3381e7058f95115c72e2da032b60a78"
 	}
 ]

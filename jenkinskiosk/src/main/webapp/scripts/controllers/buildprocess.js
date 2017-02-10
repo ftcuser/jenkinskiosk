@@ -1,6 +1,11 @@
 angular.module('EchoWebAppModule').controller('buildController', function($rootScope, $scope, $http, $location, $interval) {
 	    
 	var stop;
+	
+	if($rootScope.projectId == null) {
+		$location.path('/');
+		$location.replace();
+	}
 		    
 	$http.get("servlet/startbuild/" + $rootScope.projectId + "/" + $rootScope.jobName+ "/" + $rootScope.lastBuild)
 		 	.then(function(response){

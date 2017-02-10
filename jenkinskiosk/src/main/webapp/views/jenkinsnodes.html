@@ -17,7 +17,7 @@
 			<td>{{node.description}}</td>
 			<td>{{node.running}}</td>
 			<td>				
-				<input type="button" value="View" class="btn btn-info" ng-show="node.running" ng-click="gotoJenkinsHome(node.id)">				
+				<input type="button" value="View" class="btn btn-info" ng-show="node.running" ng-click="gotoJenkinsHome(node.id, node.projectName)">				
 			</td>
 		</tr>
 		</tbody>
