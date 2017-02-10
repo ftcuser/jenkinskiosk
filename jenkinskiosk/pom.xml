@@ -27,6 +27,12 @@
 	  <groupId>com.offbytwo.jenkins</groupId>
 	  <artifactId>jenkins-client</artifactId>
 	  <version>0.3.7</version>
+	  <exclusions>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+          </exclusion>
+      </exclusions>
 	</dependency>
 	
  	<dependency>
@@ -69,7 +75,13 @@
 	    <groupId>org.codehaus.jackson</groupId>
 	    <artifactId>jackson-mapper-asl</artifactId>
 	    <version>1.9.13</version>
-	</dependency>	
+	</dependency>
+	<!-- AWS Dependencies -->
+	<dependency>
+    	<groupId>com.amazonaws</groupId>
+    	<artifactId>aws-java-sdk</artifactId>
+    	<version>1.11.86</version>
+	</dependency>
   </dependencies>
   
   <build>
