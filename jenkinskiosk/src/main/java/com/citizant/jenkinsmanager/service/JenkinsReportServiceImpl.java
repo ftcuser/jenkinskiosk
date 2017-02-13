@@ -76,8 +76,8 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 		//Sort by time stamp
 		Collections.sort(buildscs, new Comparator<BuildStatistics>() {
 			   public int compare(BuildStatistics b1, BuildStatistics b2) {
-			      if( b1.getDatestamp() > b2.getDatestamp()) return -1;
-			      else return 1; 
+			      if( b1.getDatestamp() > b2.getDatestamp()) return 1;
+			      else return -1; 
 			   }
 			});
 		ds.setBuildscs(buildscs);
