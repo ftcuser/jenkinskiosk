@@ -43,13 +43,19 @@ public class RestController extends AbstractController {
 		return nodes;
 	}
 	
-	@RequestMapping("/addNode")
+	@RequestMapping("/updateNode")
 	@ResponseBody
-	public  List<JenkinsNode> addJenkinsNodes(@RequestBody JenkinsNode jenkinsNode){		
+	public  List<JenkinsNode> updateJenkinsNode(@RequestBody JenkinsNode jenkinsNode){		
 		jenkinsService.updateNode(jenkinsNode);
 		return jenkinsService.getJenkinsNodes();
 	}
-
+	
+	@RequestMapping("/deleteNode")
+	@ResponseBody
+	public  List<JenkinsNode> deleteJenkinsNode(@RequestBody JenkinsNode jenkinsNode){		
+		//jenkinsService.deleteNode(jenkinsNode);
+		return jenkinsService.getJenkinsNodes();
+	}
 	
 	@RequestMapping("/jenkinshome/{projectId}")
 	@ResponseBody

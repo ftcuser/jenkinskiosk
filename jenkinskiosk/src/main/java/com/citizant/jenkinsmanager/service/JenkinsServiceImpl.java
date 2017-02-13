@@ -214,6 +214,9 @@ public class JenkinsServiceImpl implements JenkinsService {
 	@Override
 	public void updateNode(JenkinsNode jenkinsNode) {
 		com.citizant.jenkinsmanager.domain.JenkinsNode node = new com.citizant.jenkinsmanager.domain.JenkinsNode();
+		if (jenkinsNode.getId() != null && jenkinsNode.getId().length() > 0) {
+			node.setNodeId(jenkinsNode.getId());
+		}
 		node.setProjectName(jenkinsNode.getProjectName());
 		node.setDescription(jenkinsNode.getDescription());
 		node.setServerUrl(jenkinsNode.getServerUrl());

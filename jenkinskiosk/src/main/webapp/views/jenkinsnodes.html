@@ -18,6 +18,8 @@
 			<td>{{node.running}}</td>
 			<td>				
 				<input type="button" value="View" class="btn btn-info" ng-show="node.running" ng-click="gotoJenkinsHome(node.id, node.projectName)">
+				<input type="button" value="Edit" class="btn btn-info" ng-click="editNode(node.id)" id="en_{{node.id}}">
+				<input type="button" value="Delete" class="btn btn-info" ng-click="deleteNode(node.id)" id="dn_{{node.id}}">
 			</td>
 		</tr>
 		</tbody>

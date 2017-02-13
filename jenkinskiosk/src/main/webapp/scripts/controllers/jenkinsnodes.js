@@ -1,4 +1,4 @@
-angular.module('EchoWebAppModule').controller('jenkinsNodesController', function($rootScope, $scope, $http, $location, $interval) {
+angular.module('EchoWebAppModule').controller('jenkinsNodesController', function($rootScope, $scope, $http, $location, $interval, NodeService) {
 	
 	  $scope.editMode = false;
 	  $scope.buildListMode = false;
@@ -38,11 +38,18 @@ angular.module('EchoWebAppModule').controller('jenkinsNodesController', function
 	  };
 	  
 	  $scope.updateNode = function() {
-			 $http.post("servlet/addNode", $scope.node)
+			 $http.post("servlet/updateNode", $scope.node)
 			 	.then(function(success){
 			 		$scope.nodes = success.data;
 			 	});
 			 $scope.editMode = false;
+	  };
+	  
+	  $scope.editNode = function(nodeId) {
+			console.log(nodeId);
+			$scope.actionLabel = "Update";
+			$scope.node = NodeService.getNodeById(nodeId, $scope.nodes);
+			$scope.editMode = true;
 	  };
 
 });
