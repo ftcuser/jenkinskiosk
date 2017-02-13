@@ -36,7 +36,7 @@ public class ReportController extends AbstractController{
 	@RequestMapping("/dashbord")
 	@ResponseBody
 	public  Dashboard getDashboard(HttpServletRequest request){		
-		String serverConfig = request.getServletContext().getRealPath("/WEB-INF/jenkins-servers.json");
+		String serverConfig = request.getSession().getServletContext().getRealPath("/WEB-INF/jenkins-servers.json");
 		List<JenkinsNode> nodes = reportService.getJenkinsNodes(serverConfig);		
 		return reportService.getAllJenkinsStatistics();
 	}
