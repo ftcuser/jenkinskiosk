@@ -13,6 +13,7 @@ public class JenkinsNode implements Serializable {
 	private String serverUrl;
 	private String username;
 	private String password;
+	private boolean isActive;
 	private boolean running = false;
 	
 	
@@ -59,5 +60,10 @@ public class JenkinsNode implements Serializable {
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
-
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

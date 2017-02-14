@@ -51,5 +51,15 @@ angular.module('EchoWebAppModule').controller('jenkinsNodesController', function
 			$scope.node = NodeService.getNodeById(nodeId, $scope.nodes);
 			$scope.editMode = true;
 	  };
+	  
+	  $scope.deleteNode = function(nodeId) {
+			console.log(nodeId);
+			$scope.node = NodeService.getNodeById(nodeId, $scope.nodes);
+			$http.post("servlet/deleteNode", $scope.node)
+		 	.then(function(success){
+		 		$scope.nodes = success.data;
+		 	});
+			$scope.editMode = false;
+	  };
 
 });

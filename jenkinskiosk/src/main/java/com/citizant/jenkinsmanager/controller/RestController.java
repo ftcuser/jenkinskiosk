@@ -53,7 +53,7 @@ public class RestController extends AbstractController {
 	@RequestMapping("/deleteNode")
 	@ResponseBody
 	public  List<JenkinsNode> deleteJenkinsNode(@RequestBody JenkinsNode jenkinsNode){		
-		//jenkinsService.deleteNode(jenkinsNode);
+		jenkinsService.deleteNode(jenkinsNode);
 		return jenkinsService.getJenkinsNodes();
 	}
 	

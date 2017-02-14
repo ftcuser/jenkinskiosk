@@ -22,5 +22,7 @@ public interface JenkinsService {
 	public JenkinsBuild getBuildDetail(String projectId, String jobName, int buildNumber);
 
 	public void updateNode(JenkinsNode jenkinsNode);
+
+	public void deleteNode(JenkinsNode jenkinsNode);
 	
 }
