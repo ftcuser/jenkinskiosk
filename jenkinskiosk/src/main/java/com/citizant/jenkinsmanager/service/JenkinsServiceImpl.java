@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.citizant.jenkinsmanager.bean.JenkinsBuild;
 import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
+import com.citizant.jenkinsmanager.bean.JenkinsView;
 import com.citizant.jenkinsmanager.dao.JenkinsNodesDao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
+import com.offbytwo.jenkins.model.View;
 
 
 public class JenkinsServiceImpl implements JenkinsService {
@@ -49,6 +51,53 @@ public class JenkinsServiceImpl implements JenkinsService {
 		}  
 		
 		return nodes;
+	}
+	
+	public List<JenkinsView> getViewsOfNode(String projectId) {
+		
+		List<JenkinsView> views = new ArrayList<JenkinsView>();
+		
+		if(this.nodes != null) {
+			for(JenkinsNode node : nodes) {
+				if(projectId.equals(node.getId())) {
+					try{
+						JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+			
+						Map<String, View> jenkinsViews = js.getViews();
+						
+						for(View vw : jenkinsViews.values()){
+							JenkinsView jvw = new JenkinsView();
+							jvw.setName(vw.getName());
+							jvw.setDescription(vw.getDescription());
+							
+							List<JenkinsJob> jobs = new ArrayList<JenkinsJob>();
+							
+							for(Job job : vw.getJobs()) {
+								JobWithDetails jd = job.details();
+								JenkinsJob jb = new JenkinsJob();
+								jb.setName(jd.getName());
+								jb.setDescription(jd.getDescription());
+												
+								JenkinsBuild lastBuild = new JenkinsBuild();
+								lastBuild.setBuildNumber(jd.getLastBuild().getNumber());
+								lastBuild.setBuildDate((new Date(jd.getLastBuild().details().getTimestamp())).toString());
+								lastBuild.setStatus(jd.getLastBuild().details().getResult().name());
+								jb.setLastBuild(lastBuild);
+								jobs.add(jb);
+							}
+							jvw.setJobs(jobs);
+							views.add(jvw);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
+			}
+			return views;
+		}
+		return views;
 	}
 	
 	private JenkinsNode mapJenkinsNodeToUI(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode) {
