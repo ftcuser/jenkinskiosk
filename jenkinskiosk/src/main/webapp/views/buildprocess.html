@@ -1,10 +1,13 @@
 <div>
-	<h3>{{projectName}} - {{jobName}} Build Status:</h3>
+	<h3>{{projectName}} - {{jobName}}</h3>
 	
 	Build Number : {{runningBuild.buildNumber}}<br/>
 	Build Started at : {{runningBuild.buildDate}}<br/>
 	Build in Progress : {{runningBuild.running}}<br/>
 	Build Message : {{runningBuild.processMessage}}<br/>
+	<br/>
+
+	<input type="button" ng-hide="runningBuild.running" class="btn btn-info" value="Back" id="btnAddNode" ng-click="backToJobList();">
 	Console Output:<br/>
 	
 	<pre>{{runningBuild.consoleOutput}}</pre>

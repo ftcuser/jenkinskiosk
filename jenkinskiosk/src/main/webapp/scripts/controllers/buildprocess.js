@@ -29,4 +29,9 @@ angular.module('EchoWebAppModule').controller('buildController', function($rootS
             stop = undefined;
           }
       };
+      
+      $scope.backToJobList = function(){
+    	$location.path('/buildlist');
+  		$location.replace();
+      };
 });
