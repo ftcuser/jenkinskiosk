@@ -189,6 +189,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 							if(bwd.isBuilding()) {
 								build.setProcessMessage("Build is in progress");
 								build.setRunning(true);
+								build.setConsoleOutput(bwd.getConsoleOutputText());
 							} else {
 								build.setProcessMessage("Build is completed");
 								build.setRunning(false);
