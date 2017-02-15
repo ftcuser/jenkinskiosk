@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.citizant.jenkinsmanager.bean.JenkinsBuild;
 import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
@@ -40,7 +39,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 			//Check if the servers are running
 			nodes.clear();
 			for(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode : jenkinsNodesList) {
-				JenkinsNode node = mapJenkinsNodeToUI(jenkinsNode);
+				JenkinsNode node = mapJenkinsNodeToUINode(jenkinsNode);
 				nodes.add(node);
 				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
 				node.setRunning(js.isRunning());
@@ -100,17 +99,6 @@ public class JenkinsServiceImpl implements JenkinsService {
 			return views;
 		}
 		return views;
-	}
-	
-	private JenkinsNode mapJenkinsNodeToUI(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode) {
-		JenkinsNode node = new JenkinsNode();
-		node.setId(jenkinsNode.getNodeId());
-		node.setProjectName(jenkinsNode.getProjectName());
-		node.setDescription(jenkinsNode.getDescription());
-		node.setServerUrl(jenkinsNode.getServerUrl());
-		node.setUsername(jenkinsNode.getUsername());
-		node.setPassword(jenkinsNode.getPassword());
-		return node;
 	}
 	
 	public List<JenkinsJob> getJobList(String projectId) {
@@ -263,16 +251,42 @@ public class JenkinsServiceImpl implements JenkinsService {
 	}
 
 	@Override
-	public void updateNode(JenkinsNode jenkinsNode) {
+	public void updateNode(JenkinsNode uiNode) {
+		com.citizant.jenkinsmanager.domain.JenkinsNode node = mapUINodeToJenkinsNode(uiNode);
+		jenkinsNodesDao.save(node);
+	}
+	
+	@Override
+	public void deleteNode(JenkinsNode uiNode) {
+		com.citizant.jenkinsmanager.domain.JenkinsNode node = mapUINodeToJenkinsNode(uiNode);
+		node.setActive(false);
+		jenkinsNodesDao.save(node);
+		
+	}
+
+	private com.citizant.jenkinsmanager.domain.JenkinsNode mapUINodeToJenkinsNode(JenkinsNode uiNode) {
 		com.citizant.jenkinsmanager.domain.JenkinsNode node = new com.citizant.jenkinsmanager.domain.JenkinsNode();
-		if (jenkinsNode.getId() != null && jenkinsNode.getId().length() > 0) {
-			node.setNodeId(jenkinsNode.getId());
+		if (uiNode.getId() != null && uiNode.getId().length() > 0) {
+			node.setNodeId(uiNode.getId());
 		}
+		node.setProjectName(uiNode.getProjectName());
+		node.setDescription(uiNode.getDescription());
+		node.setServerUrl(uiNode.getServerUrl());
+		node.setUsername(uiNode.getUsername());
+		node.setPassword(uiNode.getPassword());
+		node.setActive(uiNode.isActive());
+		return node;
+	}
+	
+	private JenkinsNode mapJenkinsNodeToUINode(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode) {
+		JenkinsNode node = new JenkinsNode();
+		node.setId(jenkinsNode.getNodeId());
 		node.setProjectName(jenkinsNode.getProjectName());
 		node.setDescription(jenkinsNode.getDescription());
 		node.setServerUrl(jenkinsNode.getServerUrl());
 		node.setUsername(jenkinsNode.getUsername());
 		node.setPassword(jenkinsNode.getPassword());
-		jenkinsNodesDao.save(node);
+		node.setActive(jenkinsNode.isActive());
+		return node;
 	}
 }
