@@ -33,7 +33,8 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 
 	protected List<JenkinsNode> nodes = null;
 	private SimpleDateFormat SF = new SimpleDateFormat("MM/dd/yyyy");
-
+	protected Dashboard dashboard = null;
+	
 	public List<JenkinsNode> getJenkinsNodes(String configFile) {
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -57,32 +58,34 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 	}
 
 	public Dashboard getAllJenkinsStatistics() {
-		Dashboard ds = new Dashboard();
-		HashMap<String, BuildStatistics> bumap = new HashMap<String, BuildStatistics>();
-		if(this.nodes!=null) {
-			for(JenkinsNode node : nodes) {
-				ds.setNumOfNodes(ds.getNumOfNodes() + 1);
-				if(node.isRunning()) {
-					ds.setNumOfLiveNodes(ds.getNumOfLiveNodes() + 1);
-					countJenkins(ds, bumap, node);
-				}				
-			}			
-		}
-		//Process results to list
+		if(dashboard == null) {
+			dashboard = new Dashboard();
+			HashMap<String, BuildStatistics> bumap = new HashMap<String, BuildStatistics>();
+			if(this.nodes!=null) {
+				for(JenkinsNode node : nodes) {
+					dashboard.setNumOfNodes(dashboard.getNumOfNodes() + 1);
+					if(node.isRunning()) {
+						dashboard.setNumOfLiveNodes(dashboard.getNumOfLiveNodes() + 1);
+						countJenkins(dashboard, bumap, node);
+					}				
+				}			
+			}
+			//Process results to list
+				
+			List<BuildStatistics> buildscs = new ArrayList<BuildStatistics>();
+			buildscs.addAll(bumap.values());
 			
-		List<BuildStatistics> buildscs = new ArrayList<BuildStatistics>();
-		buildscs.addAll(bumap.values());
+			//Sort by time stamp
+			Collections.sort(buildscs, new Comparator<BuildStatistics>() {
+				   public int compare(BuildStatistics b1, BuildStatistics b2) {
+				      if( b1.getDatestamp() > b2.getDatestamp()) return 1;
+				      else return -1; 
+				   }
+				});
+			dashboard.setBuildscs(buildscs);
+		}
 		
-		//Sort by time stamp
-		Collections.sort(buildscs, new Comparator<BuildStatistics>() {
-			   public int compare(BuildStatistics b1, BuildStatistics b2) {
-			      if( b1.getDatestamp() > b2.getDatestamp()) return 1;
-			      else return -1; 
-			   }
-			});
-		ds.setBuildscs(buildscs);
-		
-		return ds;
+		return dashboard;
 	}
 	
 	private void countJenkins(Dashboard ds, HashMap<String, BuildStatistics> bumap, JenkinsNode node) {

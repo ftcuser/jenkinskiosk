@@ -1,0 +1,41 @@
+	<h3>{{projectName}} Build Jobs:</h3>
+
+<div >
+	<button ng-click="switchView(view.index)" ng-repeat="view in views">{{view.name}}</button>
+</div>
+
+
+
+<div>
+	<pre>{{currentview.description}}</pre>
+	<table id="jobTable" datatable="ng" class="table table-striped table-bordered">
+		<thead>
+		<tr>
+			<th width="30%">Job Name</th>
+			<th width="30%">Description</th>
+			<th width="20%">Status</th>			
+		    <th width="20%"></th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat = "job in currentview.jobs">
+			<td>{{job.name}}</td>
+			<td>{{job.description}}</td>
+			<td>
+				Last Build: #{{job.lastBuild.buildNumber}} <br/>
+				{{job.lastBuild.buildDate}} <br/>
+				{{job.lastBuild.status}}
+			</td>
+			<td>	
+			<input type="button" value="Build History" class="btn btn-info"  ng-click="getBuildHistory(job.name);">				
+
+				<br/><br/>
+			<input type="button" value="Start Build" class="btn btn-info"  ng-click="startBuild(job.name, job.lastBuild.buildNumber);">				
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	</div>
+
+</div>
+

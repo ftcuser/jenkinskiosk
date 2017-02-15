@@ -64,7 +64,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 						JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
 			
 						Map<String, View> jenkinsViews = js.getViews();
-						
+						int count = 0;
 						for(View vw : jenkinsViews.values()){
 							JenkinsView jvw = new JenkinsView();
 							jvw.setName(vw.getName());
@@ -85,8 +85,10 @@ public class JenkinsServiceImpl implements JenkinsService {
 								jb.setLastBuild(lastBuild);
 								jobs.add(jb);
 							}
+							jvw.setIndex(count);
 							jvw.setJobs(jobs);
 							views.add(jvw);
+							count++;
 						}
 						
 					} catch (Exception e) {

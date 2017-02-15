@@ -4,10 +4,19 @@ import java.io.Serializable;
 import java.util.List;
 
 public class JenkinsView implements Serializable {
-
+	
+		private int index = 0;
 		private String name;
 		private String description;
 		private List<JenkinsJob> jobs;
+		
+		
+		public int getIndex() {
+			return index;
+		}
+		public void setIndex(int index) {
+			this.index = index;
+		}
 		public String getName() {
 			return name;
 		}
