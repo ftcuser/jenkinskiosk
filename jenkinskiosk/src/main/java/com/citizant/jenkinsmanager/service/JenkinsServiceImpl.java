@@ -3,7 +3,10 @@ package com.citizant.jenkinsmanager.service;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +32,9 @@ public class JenkinsServiceImpl implements JenkinsService {
 	
 	@Autowired
 	private JenkinsNodesDao jenkinsNodesDao;
+	
 	protected List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
+	protected SimpleDateFormat fm  = new SimpleDateFormat("HH:mm a, MM/dd/yyyy");
 
 	public List<JenkinsNode> getJenkinsNodes() {
 		
@@ -78,9 +83,10 @@ public class JenkinsServiceImpl implements JenkinsService {
 								jb.setDescription(jd.getDescription());
 												
 								JenkinsBuild lastBuild = new JenkinsBuild();
-								lastBuild.setBuildNumber(jd.getLastBuild().getNumber());
-								lastBuild.setBuildDate((new Date(jd.getLastBuild().details().getTimestamp())).toString());
-								lastBuild.setStatus(jd.getLastBuild().details().getResult().name());
+								BuildWithDetails bwd = jd.getLastBuild().details();
+								lastBuild.setBuildNumber(bwd.getNumber());
+								lastBuild.setBuildDate(formatDate(bwd.getTimestamp()));
+								lastBuild.setStatus(bwd.getResult().name());
 								jb.setLastBuild(lastBuild);
 								jobs.add(jb);
 							}
@@ -119,9 +125,10 @@ public class JenkinsServiceImpl implements JenkinsService {
 							jb.setDescription(jd.getDescription());
 											
 							JenkinsBuild lastBuild = new JenkinsBuild();
-							lastBuild.setBuildNumber(jd.getLastBuild().getNumber());
-							lastBuild.setBuildDate((new Date(jd.getLastBuild().details().getTimestamp())).toString());
-							lastBuild.setStatus(jd.getLastBuild().details().getResult().name());
+							BuildWithDetails bwd = jd.getLastBuild().details();
+							lastBuild.setBuildNumber(bwd.getNumber());
+							lastBuild.setBuildDate(formatDate(bwd.getTimestamp()));
+							lastBuild.setStatus(bwd.getResult().name());
 							jb.setLastBuild(lastBuild);
 							jobs.add(jb);
 						}
@@ -137,6 +144,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 		return jobs;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List<JenkinsBuild> getBuildHistory(String projectId, String jobName) {
 		List<JenkinsBuild> bds = new ArrayList<JenkinsBuild>();
 		if(this.nodes != null) {
@@ -149,7 +157,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 							BuildWithDetails bwd = bd.details();
 							JenkinsBuild jbd = new JenkinsBuild();
 							jbd.setBuildNumber(bd.getNumber());
-							jbd.setBuildDate((new Date(bwd.getTimestamp())).toString());
+							jbd.setBuildDate(formatDate(bwd.getTimestamp()));
 							jbd.setStatus(bwd.getResult().name());
 							bds.add(jbd);
 						}
@@ -160,6 +168,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 				}
 			}
 		}
+		
 		return bds;
 	}
 	
@@ -176,14 +185,14 @@ public class JenkinsServiceImpl implements JenkinsService {
 						if(bd.getNumber() > lastBuild) {
 							BuildWithDetails bwd = bd.details();
 							build.setBuildNumber(bd.getNumber());
-							build.setBuildDate((new Date(bwd.getTimestamp()).toString()));
+							build.setBuildDate(formatDate(bwd.getTimestamp()));
 							if(bwd.isBuilding()) {
 								build.setProcessMessage("Build is in progress");
 								build.setRunning(true);
 							} else {
 								build.setProcessMessage("Build is completed");
 								build.setRunning(false);
-								build.setConsoleOutput(bwd.getConsoleOutputHtml());
+								build.setConsoleOutput(bwd.getConsoleOutputText());
 							}
 						} else {
 							build.setBuildNumber(0);
@@ -236,8 +245,8 @@ public class JenkinsServiceImpl implements JenkinsService {
 						BuildWithDetails bb = jd.getBuildByNumber(buildNumber).details();
 						build.setBuildNumber(buildNumber);
 						build.setStatus(bb.getResult().name());
-						build.setConsoleOutput(bb.getConsoleOutputHtml());
-						build.setBuildDate((new Date(bb.getTimestamp()).toString()));
+						build.setConsoleOutput(bb.getConsoleOutputText());
+						build.setBuildDate(formatDate(bb.getTimestamp()));
 						
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -288,5 +297,9 @@ public class JenkinsServiceImpl implements JenkinsService {
 		node.setPassword(jenkinsNode.getPassword());
 		node.setActive(jenkinsNode.isActive());
 		return node;
+	}
+	
+	private String formatDate(long time) {
+		return fm.format(new Date(time));
 	}
 }
