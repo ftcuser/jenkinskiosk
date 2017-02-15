@@ -13,8 +13,8 @@
 		<tr>
 			<th width="30%">Job Name</th>
 			<th width="30%">Description</th>
-			<th width="20%">Status</th>			
-		    <th width="20%"></th>
+			<th width="30%">Status</th>			
+		    <th width="10%"></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -27,10 +27,12 @@
 				{{job.lastBuild.status}}
 			</td>
 			<td>	
-			<input type="button" value="Build History" class="btn btn-info"  ng-click="getBuildHistory(job.name);">				
-
-				<br/><br/>
-			<input type="button" value="Start Build" class="btn btn-info"  ng-click="startBuild(job.name, job.lastBuild.buildNumber);">				
+			
+					
+			<i class="fa fa-tasks fa-2x" ng-click="getBuildHistory(job.name);"></i>
+			&nbsp;
+			<i class="fa fa-play  fa-2x" ng-click="startBuild(job.name, job.lastBuild.buildNumber);"></i>
+							
 			</td>
 		</tr>
 		</tbody>

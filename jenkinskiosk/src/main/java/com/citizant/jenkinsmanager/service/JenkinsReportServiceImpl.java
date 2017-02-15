@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -17,8 +16,6 @@ import java.util.Map;
 
 import com.citizant.jenkinsmanager.bean.BuildStatistics;
 import com.citizant.jenkinsmanager.bean.Dashboard;
-import com.citizant.jenkinsmanager.bean.JenkinsBuild;
-import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
