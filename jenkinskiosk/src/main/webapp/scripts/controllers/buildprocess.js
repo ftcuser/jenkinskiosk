@@ -16,6 +16,10 @@ angular.module('EchoWebAppModule').controller('buildController', function($rootS
 		$http.get("servlet/getbuild/" + $rootScope.projectId + "/" + $rootScope.jobName + "/" + $rootScope.lastBuild)
 			 	.then(function(response){
 			 		$scope.runningBuild = response.data;
+			 		
+			 		 var elem = document.getElementById('consoledata');
+			 		 elem.scrollTop = elem.scrollHeight;
+			 		
 			 		if($scope.runningBuild.running == false) {
 			 			  $scope.stopFight();
 			 		}

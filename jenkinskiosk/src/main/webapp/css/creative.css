@@ -445,3 +445,9 @@ body.loading {
 body.loading .modal {
     display: block;
 }
+
+#consoledata {
+    overflow-x:hidden;
+    overflow-y:visible;
+    height:300px;
+}
