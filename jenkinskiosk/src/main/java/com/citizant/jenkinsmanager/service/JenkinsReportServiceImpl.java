@@ -34,32 +34,12 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 	@Autowired
 	private JenkinsNodesDao jenkinsNodesDao;
 
-	protected List<JenkinsNode> nodes = null;
+	protected List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
 	private SimpleDateFormat SF = new SimpleDateFormat("MM/dd/yyyy");
 	protected Dashboard dashboard = null;
 	
 	public List<JenkinsNode> getJenkinsNodes(String configFile) {
-		/*
-		ObjectMapper mapper = new ObjectMapper();
-		String json;
-		
-		try {
-			json = new String(Files.readAllBytes(Paths.get(configFile)));
-			nodes = mapper.readValue(json, new TypeReference<List<JenkinsNode>>(){});
-			
-			//Check if the servers are running
-			for(JenkinsNode node : nodes) {
-				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
-				node.setRunning(js.isRunning());
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}  
-		
-		return nodes;
-		*/
-		
+	
 		try {
 			List<com.citizant.jenkinsmanager.domain.JenkinsNode> jenkinsNodesList = jenkinsNodesDao.getNodes();
 			
