@@ -13,7 +13,7 @@ public class JenkinsNode implements Serializable {
 	private String serverUrl;
 	private String username;
 	private String password;
-	private boolean isActive;
+	private boolean isActive = true;
 	private boolean running = false;
 	
 	
