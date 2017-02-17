@@ -204,7 +204,6 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 	
 	@Scheduled(fixedRate=60000)
 	public void generateCloudStatistics() {
-		System.out.println("Dashboard Job Started");
 		List<JenkinsNode> nodes = getJenkinsNodes(null);
 		Dashboard dbs = getAllJenkinsStatistics(nodes);
 		
