@@ -12,7 +12,7 @@
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-6">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
@@ -28,53 +28,33 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-6">
                         <div class="panel panel-green">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-cogs fa-5x"></i>
+                                        <i class="fa fa-clock-o fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">Start</div>
-                                        <div>{{runningBuild.buildDate}}</div>
+                                        <div class="sshuge">&nbsp;{{runningBuild.buildDate}}<br/></div>
+                                        <div>Start</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-6">
                         <div class="panel panel-yellow">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-check-circle fa-5x"></i>
+                                        <i class="fa fa-check-circle fa-5x" ng-hide="runningBuild.running"></i>
+                                        <i class="fa fa-spinner fa-spin fa-3x fa-fw" ng-show="runningBuild.running"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div>
-                                        
-											<i class="fa fa-spinner fa-spin fa-3x fa-fw" ng-show="runningBuild.running"></i>
-											<span class="sr-only">Loading...</span>
-	
-                                        </div>
-                                        <div>Build in Progress</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-red">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-minus-circle fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">Message</div>
-                                        <div>{{runningBuild.processMessage}}</div>
+                                       <div class="huge">&nbsp;</div>                                  
+                                        <div>Build Progress</div>
                                     </div>
                                 </div>
                             </div>
@@ -83,9 +63,9 @@
                 </div>
                 <!-- /.row -->
             </div>
-
-	<input type="button" ng-hide="runningBuild.running" class="btn btn-info" value="Back" id="btnAddNode" ng-click="backToJobList();">
-
+   <pre>{{runningBuild.processMessage}}
+   <input type="button" ng-hide="runningBuild.running" class="btn btn-info" value="Back" id="btnAddNode" ng-click="backToJobList();">
+   </pre>
 	<div id="consoledata">
 		<pre >{{runningBuild.consoleOutput}}</pre>
 	</div>

@@ -458,7 +458,9 @@ body.loading .modal {
 .huge {
     font-size: 40px;
 }
-
+.sshuge {
+    font-size: 20px;
+}
 .panel-green {
     border-color: #5cb85c;
 }
