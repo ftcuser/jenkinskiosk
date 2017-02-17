@@ -18,7 +18,7 @@
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
     
     <context:annotation-config/>
-    <!-- task:annotation-driven /-->
+    <task:annotation-driven/>
     <bean id="daoConfig" class="com.citizant.jenkinsmanager.dao.DaoConfig" />
     <bean id="serviceConfig" class="com.citizant.jenkinsmanager.service.ServiceConfig" />
 </beans>
