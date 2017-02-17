@@ -1,7 +1,7 @@
 <div>
 	<h3>{{projectName}} - {{jobName}} Build History:</h3>
 	
-	<table id="buildHistoryTable" datatable="ng" class="table table-striped table-bordered">
+	<table id="buildHistoryTable" datatable="ng" dt-options="dtOptions" class="table table-striped table-bordered">
 		<thead>
 		<tr>
 			<th width="30%">Build #</th>
@@ -18,8 +18,9 @@
 			<td>
 				{{build.status}}
 			</td>
-			<td>				
-				<input type="button" value="Build Detail" class="btn btn-info"  ng-click="getBuildDetail(build.buildNumber);">			
+			<td>	
+			<i class="fa fa-server  fa-2x"  ng-click="getBuildDetail(build.buildNumber);"></i>
+				&nbsp;
 			</td>
 		</tr>
 		</tbody>

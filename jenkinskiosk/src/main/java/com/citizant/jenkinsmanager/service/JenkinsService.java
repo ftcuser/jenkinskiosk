@@ -5,11 +5,14 @@ import java.util.List;
 import com.citizant.jenkinsmanager.bean.JenkinsBuild;
 import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
+import com.citizant.jenkinsmanager.bean.JenkinsView;
 
 
 public interface JenkinsService {
 	
 	public List<JenkinsNode> getJenkinsNodes();
+	
+	public List<JenkinsView> getViewsOfNode(String projectId);
 	
 	public List<JenkinsJob> getJobList(String projectId);
 	
@@ -24,5 +27,7 @@ public interface JenkinsService {
 	public void updateNode(JenkinsNode jenkinsNode);
 
 	public void deleteNode(JenkinsNode jenkinsNode);
+	
+	public List<JenkinsNode> getLocalNodes(String configFile);
 	
 }

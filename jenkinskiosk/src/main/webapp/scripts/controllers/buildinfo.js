@@ -10,4 +10,9 @@ angular.module('EchoWebAppModule').controller('buildinfoController', function($r
  		$scope.build = response.data;
  		$scope.jobName = $rootScope.jobName;
  	});
+	
+	$scope.backToJobList = function() {
+		$location.path('/buildlist');
+  		$location.replace();
+	};
 });

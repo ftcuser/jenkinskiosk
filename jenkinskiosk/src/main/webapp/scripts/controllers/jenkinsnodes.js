@@ -17,7 +17,7 @@ angular.module('EchoWebAppModule').controller('jenkinsNodesController', function
 	  $scope.gotoJenkinsHome = function(projectId, projectName) {
 		  	$rootScope.projectName = projectName;
 		    $rootScope.projectId = projectId;
-		    $location.path('/jenkins');
+		    $location.path('/views');
 		    $location.replace();
 	  };
 	  

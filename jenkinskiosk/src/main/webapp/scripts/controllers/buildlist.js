@@ -1,4 +1,4 @@
-angular.module('EchoWebAppModule').controller('buildlistController', function($rootScope, $scope, $location, $http) {
+angular.module('EchoWebAppModule').controller('buildlistController', function($rootScope, $scope, $location, $http, DTOptionsBuilder) {
 	
 	if($rootScope.projectId == null) {
 		$location.path('/');
@@ -8,6 +8,9 @@ angular.module('EchoWebAppModule').controller('buildlistController', function($r
 		$http.get("servlet/buildhistory/" + $rootScope.projectId + "/" + $rootScope.jobName)
 			.then(function(response){
 				$scope.builds = response.data;
+				$scope.dtOptions = DTOptionsBuilder.newOptions()
+			    .withOption('order', [0, 'desc']);
+			
 			});
 		
 		

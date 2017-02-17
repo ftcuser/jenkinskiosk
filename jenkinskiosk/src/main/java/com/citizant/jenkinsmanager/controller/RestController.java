@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import com.citizant.jenkinsmanager.bean.JenkinsBuild;
 import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
+import com.citizant.jenkinsmanager.bean.JenkinsView;
 import com.citizant.jenkinsmanager.service.JenkinsService;
 import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
@@ -40,6 +41,8 @@ public class RestController extends AbstractController {
 	@ResponseBody
 	public  List<JenkinsNode> listJenkinsNodes(HttpServletRequest request){		
 		List<JenkinsNode> nodes = jenkinsService.getJenkinsNodes();
+		//List<JenkinsNode> nodes = jenkinsService.getLocalNodes(request.getSession()
+		//		.getServletContext().getRealPath("/WEB-INF/jenkins-servers.json"));
 		return nodes;
 	}
 	
@@ -62,6 +65,14 @@ public class RestController extends AbstractController {
 	public List<JenkinsJob> getJenkinsInfo(@PathVariable String projectId){				
 		return jenkinsService.getJobList(projectId);
 	}
+	
+	@RequestMapping("/jenkinsviews/{projectId}")
+	@ResponseBody
+	public List<JenkinsView> getJenkinsViews(@PathVariable String projectId){				
+		return jenkinsService.getViewsOfNode(projectId);
+	}
+		
+	
 	
 	@RequestMapping("/buildhistory/{projectId}/{jobName}")
 	@ResponseBody

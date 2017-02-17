@@ -21,5 +21,14 @@
 		"serverUrl":"http://ec2-54-82-132-11.compute-1.amazonaws.com:8888/jenkins",
 		"username":"admin",
 		"password":"c3381e7058f95115c72e2da032b60a78"
+	},
+	{
+		"id":"4",
+		"projectName":"Rean Cloud CI Server",
+		"description":"Rean Cloud on AWS",
+		"serverUrl":"http://jenkinsbp-dev-xelb-680208771.us-east-1.elb.amazonaws.com/",
+		"username":"swang",
+		"password":"abedad09f153343221461cbafd8dd14c"
 	}
+	
 ]

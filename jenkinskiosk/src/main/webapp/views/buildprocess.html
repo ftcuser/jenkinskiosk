@@ -1,10 +1,19 @@
 <div>
-	<h3>{{projectName}} - {{jobName}} Build Status:</h3>
+	<h3>{{projectName}} - {{jobName}}</h3>
 	
 	Build Number : {{runningBuild.buildNumber}}<br/>
 	Build Started at : {{runningBuild.buildDate}}<br/>
 	Build in Progress : {{runningBuild.running}}<br/>
 	Build Message : {{runningBuild.processMessage}}<br/>
+	
+	<div ng-show="runningBuild.running">
+		<i class="fa fa-spinner fa-spin fa-5x fa-fw"></i><span class="sr-only">Loading...</span>
+	</div>
+	
+	<br/>
+
+	<input type="button" ng-hide="runningBuild.running" class="btn btn-info" value="Back" id="btnAddNode" ng-click="backToJobList();">
+	<br/>
 	Console Output:<br/>
 	
 	<pre>{{runningBuild.consoleOutput}}</pre>

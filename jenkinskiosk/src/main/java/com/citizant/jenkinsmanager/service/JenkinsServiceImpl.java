@@ -3,17 +3,19 @@ package com.citizant.jenkinsmanager.service;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.citizant.jenkinsmanager.bean.JenkinsBuild;
 import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
+import com.citizant.jenkinsmanager.bean.JenkinsView;
 import com.citizant.jenkinsmanager.dao.JenkinsNodesDao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,13 +24,37 @@ import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
+import com.offbytwo.jenkins.model.View;
 
 
 public class JenkinsServiceImpl implements JenkinsService {
 	
 	@Autowired
 	private JenkinsNodesDao jenkinsNodesDao;
+	
 	protected List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
+	protected SimpleDateFormat fm  = new SimpleDateFormat("HH:mm a, MM/dd/yyyy");
+	
+	public List<JenkinsNode> getLocalNodes(String configFile) {
+		ObjectMapper mapper = new ObjectMapper();
+		String json;
+		
+		try {
+			json = new String(Files.readAllBytes(Paths.get(configFile)));
+			nodes = mapper.readValue(json, new TypeReference<List<JenkinsNode>>(){});
+			
+			//Check if the servers are running
+			for(JenkinsNode node : nodes) {
+				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+				node.setRunning(js.isRunning());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+		
+		return nodes;
+	}
 
 	public List<JenkinsNode> getJenkinsNodes() {
 		
@@ -51,6 +77,56 @@ public class JenkinsServiceImpl implements JenkinsService {
 		return nodes;
 	}
 	
+	public List<JenkinsView> getViewsOfNode(String projectId) {
+		
+		List<JenkinsView> views = new ArrayList<JenkinsView>();
+		
+		if(this.nodes != null) {
+			for(JenkinsNode node : nodes) {
+				if(projectId.equals(node.getId())) {
+					try{
+						JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+			
+						Map<String, View> jenkinsViews = js.getViews();
+						int count = 0;
+						for(View vw : jenkinsViews.values()){
+							JenkinsView jvw = new JenkinsView();
+							jvw.setName(vw.getName());
+							jvw.setDescription(vw.getDescription());
+							
+							List<JenkinsJob> jobs = new ArrayList<JenkinsJob>();
+							
+							for(Job job : vw.getJobs()) {
+								JobWithDetails jd = job.details();
+								JenkinsJob jb = new JenkinsJob();
+								jb.setName(jd.getName());
+								jb.setDescription(jd.getDescription());
+												
+								JenkinsBuild lastBuild = new JenkinsBuild();
+								BuildWithDetails bwd = jd.getLastBuild().details();
+								lastBuild.setBuildNumber(bwd.getNumber());
+								lastBuild.setBuildDate(formatDate(bwd.getTimestamp()));
+								lastBuild.setStatus(bwd.getResult().name());
+								jb.setLastBuild(lastBuild);
+								jobs.add(jb);
+							}
+							jvw.setIndex(count);
+							jvw.setJobs(jobs);
+							views.add(jvw);
+							count++;
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
+			}
+			return views;
+		}
+		return views;
+	}
+	
 	public List<JenkinsJob> getJobList(String projectId) {
 		List<JenkinsJob> jobs = new ArrayList<JenkinsJob>();
 		
@@ -69,9 +145,10 @@ public class JenkinsServiceImpl implements JenkinsService {
 							jb.setDescription(jd.getDescription());
 											
 							JenkinsBuild lastBuild = new JenkinsBuild();
-							lastBuild.setBuildNumber(jd.getLastBuild().getNumber());
-							lastBuild.setBuildDate((new Date(jd.getLastBuild().details().getTimestamp())).toString());
-							lastBuild.setStatus(jd.getLastBuild().details().getResult().name());
+							BuildWithDetails bwd = jd.getLastBuild().details();
+							lastBuild.setBuildNumber(bwd.getNumber());
+							lastBuild.setBuildDate(formatDate(bwd.getTimestamp()));
+							lastBuild.setStatus(bwd.getResult().name());
 							jb.setLastBuild(lastBuild);
 							jobs.add(jb);
 						}
@@ -87,6 +164,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 		return jobs;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List<JenkinsBuild> getBuildHistory(String projectId, String jobName) {
 		List<JenkinsBuild> bds = new ArrayList<JenkinsBuild>();
 		if(this.nodes != null) {
@@ -99,7 +177,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 							BuildWithDetails bwd = bd.details();
 							JenkinsBuild jbd = new JenkinsBuild();
 							jbd.setBuildNumber(bd.getNumber());
-							jbd.setBuildDate((new Date(bwd.getTimestamp())).toString());
+							jbd.setBuildDate(formatDate(bwd.getTimestamp()));
 							jbd.setStatus(bwd.getResult().name());
 							bds.add(jbd);
 						}
@@ -110,6 +188,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 				}
 			}
 		}
+		
 		return bds;
 	}
 	
@@ -126,14 +205,15 @@ public class JenkinsServiceImpl implements JenkinsService {
 						if(bd.getNumber() > lastBuild) {
 							BuildWithDetails bwd = bd.details();
 							build.setBuildNumber(bd.getNumber());
-							build.setBuildDate((new Date(bwd.getTimestamp()).toString()));
+							build.setBuildDate(formatDate(bwd.getTimestamp()));
 							if(bwd.isBuilding()) {
 								build.setProcessMessage("Build is in progress");
 								build.setRunning(true);
+								build.setConsoleOutput(bwd.getConsoleOutputText());
 							} else {
 								build.setProcessMessage("Build is completed");
 								build.setRunning(false);
-								build.setConsoleOutput(bwd.getConsoleOutputHtml());
+								build.setConsoleOutput(bwd.getConsoleOutputText());
 							}
 						} else {
 							build.setBuildNumber(0);
@@ -186,8 +266,8 @@ public class JenkinsServiceImpl implements JenkinsService {
 						BuildWithDetails bb = jd.getBuildByNumber(buildNumber).details();
 						build.setBuildNumber(buildNumber);
 						build.setStatus(bb.getResult().name());
-						build.setConsoleOutput(bb.getConsoleOutputHtml());
-						build.setBuildDate((new Date(bb.getTimestamp()).toString()));
+						build.setConsoleOutput(bb.getConsoleOutputText());
+						build.setBuildDate(formatDate(bb.getTimestamp()));
 						
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -238,5 +318,9 @@ public class JenkinsServiceImpl implements JenkinsService {
 		node.setPassword(jenkinsNode.getPassword());
 		node.setActive(jenkinsNode.isActive());
 		return node;
+	}
+	
+	private String formatDate(long time) {
+		return fm.format(new Date(time));
 	}
 }
