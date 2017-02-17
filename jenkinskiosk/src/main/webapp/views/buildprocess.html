@@ -17,7 +17,7 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-cloud  fa-5x"></i>
+                                        <i class="fa fa-cogs  fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge">{{runningBuild.buildNumber}}</div>
@@ -53,7 +53,7 @@
                                         <i class="fa fa-spinner fa-spin fa-3x fa-fw" ng-show="runningBuild.running"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                       <div class="huge">&nbsp;</div>                                  
+                                       <div class="sshuge">&nbsp;{{runningBuild.buildCompleteDate}}<br/></div>                          
                                         <div>Build Progress</div>
                                     </div>
                                 </div>

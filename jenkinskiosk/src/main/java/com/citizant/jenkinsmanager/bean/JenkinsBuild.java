@@ -6,6 +6,7 @@ public class JenkinsBuild implements Serializable {
 	
 	private int buildNumber;
 	private String buildDate;
+	private String buildCompleteDate;
 	private String status;
 	
 	private String consoleOutput;
@@ -13,6 +14,12 @@ public class JenkinsBuild implements Serializable {
 	private boolean running = false;
 	
 	
+	public String getBuildCompleteDate() {
+		return buildCompleteDate;
+	}
+	public void setBuildCompleteDate(String buildCompleteDate) {
+		this.buildCompleteDate = buildCompleteDate;
+	}
 	public int getBuildNumber() {
 		return buildNumber;
 	}

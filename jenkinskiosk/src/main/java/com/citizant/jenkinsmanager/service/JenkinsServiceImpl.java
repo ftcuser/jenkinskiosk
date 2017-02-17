@@ -210,10 +210,12 @@ public class JenkinsServiceImpl implements JenkinsService {
 								build.setProcessMessage("Build is in progress");
 								build.setRunning(true);
 								build.setConsoleOutput(bwd.getConsoleOutputText());
+								build.setBuildCompleteDate("");
 							} else {
 								build.setProcessMessage("Build is completed");
 								build.setRunning(false);
 								build.setConsoleOutput(bwd.getConsoleOutputText());
+								build.setBuildCompleteDate(fm.format(new Date()));
 							}
 						} else {
 							build.setBuildNumber(0);
