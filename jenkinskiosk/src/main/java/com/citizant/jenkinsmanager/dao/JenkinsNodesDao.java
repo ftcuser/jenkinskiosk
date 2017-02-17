@@ -8,4 +8,6 @@ public interface JenkinsNodesDao extends BaseDao {
 	
 	public List<JenkinsNode> getNodes();
 	
+	public String getValue(String property);
+	
 }

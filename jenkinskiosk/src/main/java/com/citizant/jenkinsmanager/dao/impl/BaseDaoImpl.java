@@ -59,6 +59,8 @@ public class BaseDaoImpl implements BaseDao {
             DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
             TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
             log.debug("Table Description: " + tableDescription);
+            
+           
         } catch (AmazonServiceException ase) {
             log.error("Caught an AmazonServiceException, which means your request made it "
                     + "to AWS, but was rejected with an error response for some reason.");
@@ -75,6 +77,47 @@ public class BaseDaoImpl implements BaseDao {
             log.error("Error Message: " + ace.getMessage());
             log.error(ace);
         }
+		
+		try {
+			
+			//Create User table
+            String tableName = "Jenkins_value_store";
+
+            // Create a table with a primary hash key named 'name', which holds a string
+            CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName)
+                .withKeySchema(new KeySchemaElement().withAttributeName("property").withKeyType(KeyType.HASH))
+                .withAttributeDefinitions(new AttributeDefinition().withAttributeName("property").withAttributeType(ScalarAttributeType.S))
+                .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
+
+            // Create table if it does not exist yet
+            TableUtils.createTableIfNotExists(dynamoDB, createTableRequest);
+            // wait for the table to move into ACTIVE state
+            TableUtils.waitUntilActive(dynamoDB, tableName);
+
+            // Describe our new table
+            DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+            TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
+            log.debug("Table Description: " + tableDescription);
+            
+           
+        } catch (AmazonServiceException ase) {
+            log.error("Caught an AmazonServiceException, which means your request made it "
+                    + "to AWS, but was rejected with an error response for some reason.");
+            log.error("Error Message:    " + ase.getMessage());
+            log.error("HTTP Status Code: " + ase.getStatusCode());
+            log.error("AWS Error Code:   " + ase.getErrorCode());
+            log.error("Error Type:       " + ase.getErrorType());
+            log.error("Request ID:       " + ase.getRequestId());
+            log.error(ase);
+        } catch (AmazonClientException ace) {
+            log.error("Caught an AmazonClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with AWS, "
+                    + "such as not being able to access the network.");
+            log.error("Error Message: " + ace.getMessage());
+            log.error(ace);
+        }		
+		
+		
 	}
 
 	@Override

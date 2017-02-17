@@ -15,13 +15,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import com.citizant.jenkinsmanager.bean.BuildStatistics;
 import com.citizant.jenkinsmanager.bean.Dashboard;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
 import com.citizant.jenkinsmanager.dao.JenkinsNodesDao;
+import com.citizant.jenkinsmanager.domain.ValueStore;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.BuildResult;
@@ -34,12 +38,31 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 	@Autowired
 	private JenkinsNodesDao jenkinsNodesDao;
 
-	protected List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
 	private SimpleDateFormat SF = new SimpleDateFormat("MM/dd/yyyy");
 	protected Dashboard dashboard = null;
 	
 	public List<JenkinsNode> getJenkinsNodes(String configFile) {
-	
+		/*
+		ObjectMapper mapper = new ObjectMapper();
+		String json;
+		
+		try {
+			json = new String(Files.readAllBytes(Paths.get(configFile)));
+			nodes = mapper.readValue(json, new TypeReference<List<JenkinsNode>>(){});
+			
+			//Check if the servers are running
+			for(JenkinsNode node : nodes) {
+				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+				node.setRunning(js.isRunning());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+		
+		return nodes;
+		*/
+		List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
 		try {
 			List<com.citizant.jenkinsmanager.domain.JenkinsNode> jenkinsNodesList = jenkinsNodesDao.getNodes();
 			
@@ -58,20 +81,42 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 		
 		return nodes;
 	}
+	
+	public Dashboard getCloudDashboard(List<JenkinsNode> nodes) {
+		
+		Dashboard ds = null;
+		//Retrieve from database first
+		String json = jenkinsNodesDao.getValue("dashboard");
+		
+		if(json != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+			
+				ds = mapper.readValue(json, new TypeReference<Dashboard>(){});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}  
+		} else {
+			ds = getAllJenkinsStatistics(nodes);
+		}
+		return ds;
+		
+	}
 
-	public Dashboard getAllJenkinsStatistics() {
+	public Dashboard getAllJenkinsStatistics(List<JenkinsNode> nodes) {
 		if(dashboard == null) {
 			dashboard = new Dashboard();
 			HashMap<String, BuildStatistics> bumap = new HashMap<String, BuildStatistics>();
-			if(this.nodes!=null) {
-				for(JenkinsNode node : nodes) {
+			
+			for(JenkinsNode node : nodes) {
 					dashboard.setNumOfNodes(dashboard.getNumOfNodes() + 1);
 					if(node.isRunning()) {
 						dashboard.setNumOfLiveNodes(dashboard.getNumOfLiveNodes() + 1);
 						countJenkins(dashboard, bumap, node);
 					}				
-				}			
-			}
+			}			
+			
 			//Process results to list
 				
 			List<BuildStatistics> buildscs = new ArrayList<BuildStatistics>();
@@ -155,6 +200,26 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 		node.setPassword(jenkinsNode.getPassword());
 		node.setActive(jenkinsNode.isActive());
 		return node;
+	}
+	
+	@Scheduled(fixedRate=60000)
+	public void generateCloudStatistics() {
+		System.out.println("Dashboard Job Started");
+		List<JenkinsNode> nodes = getJenkinsNodes(null);
+		Dashboard dbs = getAllJenkinsStatistics(nodes);
+		
+		//Save results to database
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		try {
+			String json = mapper.writeValueAsString(dbs);
+			ValueStore vs = new ValueStore();
+			vs.setJson(json);
+			vs.setProperty("dashboard");
+			jenkinsNodesDao.save(vs);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -9,6 +9,6 @@ public interface JenkinsReportService {
 	
 	public List<JenkinsNode> getJenkinsNodes(String configFile);
 	
-	public Dashboard getAllJenkinsStatistics();
+	public Dashboard getCloudDashboard(List<JenkinsNode> nodes);
 
 }

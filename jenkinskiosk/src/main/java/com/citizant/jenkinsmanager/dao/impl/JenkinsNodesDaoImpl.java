@@ -11,6 +11,7 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.citizant.jenkinsmanager.dao.JenkinsNodesDao;
 import com.citizant.jenkinsmanager.domain.JenkinsNode;
+import com.citizant.jenkinsmanager.domain.ValueStore;
 
 public class JenkinsNodesDaoImpl extends BaseDaoImpl implements JenkinsNodesDao {
 
@@ -32,5 +33,15 @@ public class JenkinsNodesDaoImpl extends BaseDaoImpl implements JenkinsNodesDao 
 			}
 		}
 		return nodesList;
+	}
+
+	@Override
+	public String getValue(String property) {
+		ValueStore vs = mapper.load(ValueStore.class, property);
+		
+		if(vs!=null) {
+			return vs.getJson();
+		}
+		return null;
 	}
 }
