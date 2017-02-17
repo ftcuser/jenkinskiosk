@@ -5,8 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +34,27 @@ public class JenkinsServiceImpl implements JenkinsService {
 	
 	protected List<JenkinsNode> nodes = new ArrayList<JenkinsNode>();
 	protected SimpleDateFormat fm  = new SimpleDateFormat("HH:mm a, MM/dd/yyyy");
+	
+	public List<JenkinsNode> getLocalNodes(String configFile) {
+		ObjectMapper mapper = new ObjectMapper();
+		String json;
+		
+		try {
+			json = new String(Files.readAllBytes(Paths.get(configFile)));
+			nodes = mapper.readValue(json, new TypeReference<List<JenkinsNode>>(){});
+			
+			//Check if the servers are running
+			for(JenkinsNode node : nodes) {
+				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+				node.setRunning(js.isRunning());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+		
+		return nodes;
+	}
 
 	public List<JenkinsNode> getJenkinsNodes() {
 		

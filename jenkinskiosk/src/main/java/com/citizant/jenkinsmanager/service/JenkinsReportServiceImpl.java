@@ -14,9 +14,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.citizant.jenkinsmanager.bean.BuildStatistics;
 import com.citizant.jenkinsmanager.bean.Dashboard;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
+import com.citizant.jenkinsmanager.dao.JenkinsNodesDao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.offbytwo.jenkins.JenkinsServer;
@@ -27,13 +30,16 @@ import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
 
 public class JenkinsReportServiceImpl implements JenkinsReportService {
+	
+	@Autowired
+	private JenkinsNodesDao jenkinsNodesDao;
 
 	protected List<JenkinsNode> nodes = null;
 	private SimpleDateFormat SF = new SimpleDateFormat("MM/dd/yyyy");
 	protected Dashboard dashboard = null;
 	
 	public List<JenkinsNode> getJenkinsNodes(String configFile) {
-		
+		/*
 		ObjectMapper mapper = new ObjectMapper();
 		String json;
 		
@@ -43,6 +49,25 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 			
 			//Check if the servers are running
 			for(JenkinsNode node : nodes) {
+				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
+				node.setRunning(js.isRunning());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+		
+		return nodes;
+		*/
+		
+		try {
+			List<com.citizant.jenkinsmanager.domain.JenkinsNode> jenkinsNodesList = jenkinsNodesDao.getNodes();
+			
+			//Check if the servers are running
+			nodes.clear();
+			for(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode : jenkinsNodesList) {
+				JenkinsNode node = mapJenkinsNodeToUINode(jenkinsNode);
+				nodes.add(node);
 				JenkinsServer js = new JenkinsServer(new URI(node.getServerUrl()), node.getUsername(), node.getPassword());
 				node.setRunning(js.isRunning());
 			}
@@ -140,4 +165,16 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 		return SF.format(new Date(timestamp));
 	}
 
+	private JenkinsNode mapJenkinsNodeToUINode(com.citizant.jenkinsmanager.domain.JenkinsNode jenkinsNode) {
+		JenkinsNode node = new JenkinsNode();
+		node.setId(jenkinsNode.getNodeId());
+		node.setProjectName(jenkinsNode.getProjectName());
+		node.setDescription(jenkinsNode.getDescription());
+		node.setServerUrl(jenkinsNode.getServerUrl());
+		node.setUsername(jenkinsNode.getUsername());
+		node.setPassword(jenkinsNode.getPassword());
+		node.setActive(jenkinsNode.isActive());
+		return node;
+	}
+	
 }

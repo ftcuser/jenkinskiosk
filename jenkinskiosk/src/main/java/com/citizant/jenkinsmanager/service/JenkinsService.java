@@ -28,4 +28,6 @@ public interface JenkinsService {
 
 	public void deleteNode(JenkinsNode jenkinsNode);
 	
+	public List<JenkinsNode> getLocalNodes(String configFile);
+	
 }
