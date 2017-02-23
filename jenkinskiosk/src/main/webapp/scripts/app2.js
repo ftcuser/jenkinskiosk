@@ -9,6 +9,10 @@ angular.module("EchoWebAppModule", ["ngRoute", "ngAnimate", "ngSanitize", "mgcre
 				templateUrl: "views/jenkinsnodes.html",
 				controller: "jenkinsNodesController"
 			})	
+			.when("/activenodes", {
+				templateUrl: "views/jenkinsactivenodes.html",
+				controller: "jenkinsActiveNodesController"
+			})	
 			.when("/jenkins", {
 				templateUrl: "views/jenkinshome.html",
 				controller: "jenkinsHomeController"
