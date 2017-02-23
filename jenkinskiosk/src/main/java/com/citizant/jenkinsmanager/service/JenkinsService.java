@@ -30,4 +30,6 @@ public interface JenkinsService {
 	
 	public List<JenkinsNode> getLocalNodes(String configFile);
 	
+	public JenkinsNode getJenkinsNodeById(String projectId);
+	
 }

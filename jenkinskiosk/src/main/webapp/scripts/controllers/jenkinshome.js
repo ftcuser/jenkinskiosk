@@ -10,6 +10,26 @@ angular.module('EchoWebAppModule').controller('jenkinsHomeController', function(
 		 		$scope.jobs = response.data;
 		});
 		
+		  $http.get("servlet/nodedashbord/" + $rootScope.projectId)
+			.then(function(response){
+				$scope.dashboard = response.data;
+				
+				//The chart
+				  // Bar Chart
+			    Morris.Bar({
+			        element: 'morris-build-chart',
+			        data: $scope.dashboard.buildscs,
+			        xkey: 'date',
+			        ykeys: ['sucessful', 'failed'],
+			        labels: ['Success', 'Failed'],
+			        barRatio: 0.4,
+			        xLabelAngle: 35,
+			        hideHover: 'auto',
+			        resize: true
+			    });
+			    $body.removeClass("loading");
+				
+		  });
 		
 		$scope.getBuildHistory = function(jobName) {
 			$rootScope.jobName = jobName;			

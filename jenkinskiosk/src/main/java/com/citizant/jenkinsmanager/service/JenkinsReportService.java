@@ -10,5 +10,7 @@ public interface JenkinsReportService {
 	public List<JenkinsNode> getJenkinsNodes(String configFile);
 	
 	public Dashboard getCloudDashboard(List<JenkinsNode> nodes);
+	
+	public Dashboard getNodeDashboard(String projectId);
 
 }

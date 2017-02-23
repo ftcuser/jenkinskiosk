@@ -38,6 +38,9 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 	@Autowired
 	private JenkinsNodesDao jenkinsNodesDao;
 
+	@Autowired
+	private JenkinsService jenkinsService;
+
 	private SimpleDateFormat SF = new SimpleDateFormat("MM/dd/yyyy");
 
 	public List<JenkinsNode> getJenkinsNodes(String configFile) {
@@ -83,6 +86,29 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 		}
 		return ds;
 
+	}
+
+	public Dashboard getNodeDashboard(String projectId) {
+		Dashboard dashboard = new Dashboard();
+		JenkinsNode node = jenkinsService.getJenkinsNodeById(projectId);
+		HashMap<String, BuildStatistics> bumap = new HashMap<String, BuildStatistics>();
+		countJenkins(dashboard, bumap, node);
+		// Process results to list
+
+		List<BuildStatistics> buildscs = new ArrayList<BuildStatistics>();
+		buildscs.addAll(bumap.values());
+
+		// Sort by time stamp
+		Collections.sort(buildscs, new Comparator<BuildStatistics>() {
+			public int compare(BuildStatistics b1, BuildStatistics b2) {
+				if (b1.getDatestamp() > b2.getDatestamp())
+					return 1;
+				else
+					return -1;
+			}
+		});
+		dashboard.setBuildscs(buildscs);
+		return dashboard;
 	}
 
 	public Dashboard getAllJenkinsStatistics(List<JenkinsNode> nodes) {

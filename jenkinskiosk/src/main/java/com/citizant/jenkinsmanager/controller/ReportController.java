@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,5 +40,12 @@ public class ReportController extends AbstractController{
 		String serverConfig = request.getSession().getServletContext().getRealPath("/WEB-INF/jenkins-servers.json");
 		List<JenkinsNode> nodes = reportService.getJenkinsNodes(serverConfig);		
 		return reportService.getCloudDashboard(nodes);
+	}
+	
+	@RequestMapping("/nodedashbord/{projectId}")
+	@ResponseBody
+	public  Dashboard getNodeDashboard(HttpServletRequest request, @PathVariable String projectId){		
+		
+		return reportService.getNodeDashboard(projectId);
 	}
 }

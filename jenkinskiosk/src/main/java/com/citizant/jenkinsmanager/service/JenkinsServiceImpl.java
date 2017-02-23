@@ -56,6 +56,19 @@ public class JenkinsServiceImpl implements JenkinsService {
 		return nodes;
 	}
 
+	
+	public JenkinsNode getJenkinsNodeById(String projectId) {
+		
+		for(JenkinsNode node : nodes) {
+			if(projectId.equals(node.getId())) {
+				return node;
+			}
+		}
+		return null;
+		
+	}
+	
+	
 	public List<JenkinsNode> getJenkinsNodes() {
 		
 		try {
