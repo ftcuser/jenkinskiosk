@@ -8,7 +8,7 @@ $stdout.sync = true
 ENV['AWS_ACCOUNT_ID'] ||= '695210609519'
 
 # Have a default repo name, but let an environment variable override it.
-ENV['REPO_NAME'] ||= 'jenkinsmanager'
+ENV['REPO_NAME'] ||= 'kiosk'
 
 # Build a docker image with docker build.
 DockerTasks::Build.new 'Dockerfile'
