@@ -86,7 +86,8 @@
 				<tr>
 					<th width="30%">Job Name</th>
 					<th width="30%">Description</th>
-					<th width="30%">Status</th>			
+					<th width="10%">Ids
+					<th width="20%">Status</th>			
 				    <th width="10%"></th>
 				</tr>
 				</thead>
@@ -94,6 +95,10 @@
 				<tr ng-repeat = "job in currentview.jobs">
 					<td>{{job.name}}</td>
 					<td>{{job.description}}</td>
+					<td>
+						{{projectId}}<br/>
+						{{job.name}}
+					</td>
 					<td>
 						Last Build: #{{job.lastBuild.buildNumber}} <br/>
 						{{job.lastBuild.buildDate}} <br/>
