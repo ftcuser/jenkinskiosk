@@ -1,0 +1,22 @@
+version: '2'
+networks:
+ private:
+  driver: bridge
+
+services:
+  hub:
+    image: "selenium/hub"
+    ports:
+      - 4445:4445
+    networks:
+      - private
+
+  chrome:
+    image: "selenium/node-chrome"
+    networks:
+      - private
+    depends_on:
+      - hub
+    environment:
+      HUB_PORT_4445_TCP_ADDR: hub
+      HUB_PORT_4445_TCP_PORT: 4445
