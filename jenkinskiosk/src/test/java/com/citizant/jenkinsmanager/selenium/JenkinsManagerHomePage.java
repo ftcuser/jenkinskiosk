@@ -22,7 +22,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class JenkinsManagerHomePage {
-	 public class LoginWebTest {
 		private static String seleniumHub= "http://50.19.179.31:4444/wd/hub";
 		private static String startPage = "http://50.19.179.31:9090/jenkinsmanager/index.html";
 		private  static WebDriver driver;
