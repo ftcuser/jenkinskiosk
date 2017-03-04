@@ -22,80 +22,42 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class JenkinsManagerHomePage {
-	  private WebDriver driver;
-	  private ScreenshotHelper screenshotHelper;
-	  private WebDriverWait driverWait;
-	  
-	  private WebElement addUserButton;
-	  private WebElement emailField;
-	  private WebElement firstNameField;
-	  private WebElement lastNameField;
-	  private WebElement addButton;
-	  
-	  private String seleniumHub = "http://50.19.179.31:4444/wd/hub";
-	  private String baseUrl =  "http://50.19.179.31:9090/jenkinsmanager/index.html";
-
-	  
-	  @Before
-	  public void openBrowser() {
-	  
-	   // driver = new ChromeDriver();
-	    //driver = new HtmlUnitDriver();
-	    //((HtmlUnitDriver)driver).setJavascriptEnabled(true);
-		  
-		//try to get Selenium HUB and bas test URL from JVM parameters
-		//This should set on Jenkins
-		String hub =  System.getProperty("selenium.hub");
-		if(hub == null) {
-			hub  = seleniumHub;
-		}
+	 public class LoginWebTest {
+		private static String seleniumHub= "http://50.19.179.31:4444/wd/hub";
+		private static String startPage = "http://50.19.179.31:9090/jenkinsmanager/index.html";
+		private  static WebDriver driver;
 		
-		String base = System.getProperty("app.baseurl");
-		if(base == null) {
-			base = baseUrl;
+		@BeforeClass
+		public static void setUpDriver() throws IOException
+		{								
+		    Capabilities cap = DesiredCapabilities.firefox();	    
+		    driver = new RemoteWebDriver(new URL(seleniumHub),cap);	   
 		}
-		System.out.println("Selenium HUB : "  + hub);
-		System.out.println("The app URL : "  + base);
-		  
-	    URL hubUrl = null;
-	    try{
-	    	hubUrl = new URL(hub);
-	    }catch(Exception e){
-	    	
-	    }
-	    
-	    Capabilities cap = DesiredCapabilities.firefox();
-	    driver = new RemoteWebDriver(hubUrl, cap);
-	    driverWait = new WebDriverWait(driver, 30);
-	    driver.get(base);
-	   // screenshotHelper = new ScreenshotHelper();
-	  }
-	  
-	  @After
-	  public void saveScreenshotAndCloseBrowser() throws IOException {
-	   // screenshotHelper.saveScreenshot("screenshot.png");
-	    driver.quit();
-	  }
-	  
-	  @Test
-	  public void pageTitleAfterSearchShouldBeginWithDrupal() throws IOException {
-		System.out.println("Page Title : " + driver.getTitle());
-	    assertEquals("The page title should equal Jenkins Kiosk at the start of the test.", "Jenkins Kiosk", driver.getTitle());
-	    
-	
-	    /*
-	    WebElement searchField = driver.findElement(By.name("q"));
-	    searchField.sendKeys("Drupal!");
-	    searchField.submit();
-	    */
-	  }
-	  
-	  private class ScreenshotHelper {
-	  
-	    public void saveScreenshot(String screenshotFileName) throws IOException {
-	      File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-	      FileUtils.copyFile(screenshot, new File(screenshotFileName));
-	    }
-	  }
+			   
+		@Test	
+		
+				    
+		    public void testSeleniumInfrastructure() throws IOException, InterruptedException {   
+			driver.get(startPage);
+			Assert.assertEquals(driver.getTitle(),"Jenkins Kiosk");
+		    
+		    /*
+		    driver.findElement(By.id("email_id")).sendKeys("admin@kudo.com");
+		    driver.findElement(By.id("password_id")).sendKeys("12345");
+		    driver.findElement(By.id("btnSubmit")).click();
+		    
+		   // Assert.assertEquals(driver.getTitle(),"Flash");
+		    //driver.findElement(By.linkText("Add a User")).click();
+		    String URL = driver.getCurrentUrl();
+		    Assert.assertEquals(URL, "http://50.19.150.209:8090/kudos/servlet/home/doLogin");
+		    */
+		}
+		    
+		    @AfterClass	    
+			public static void  tearDownDriver(){	
+				driver.quit();
+				
+		}
+	}
+		
 
-}
