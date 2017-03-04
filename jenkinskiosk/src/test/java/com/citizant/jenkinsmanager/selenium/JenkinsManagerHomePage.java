@@ -15,7 +15,7 @@ package com.citizant.jenkinsmanager.selenium;
 
 	public class JenkinsManagerHomePage {
 		private static String seleniumHub= "http://50.19.179.31:4444/wd/hub";
-		private static String startPage = "http://50.19.179.31:9090/jenkinsmanager/index.html";
+		private static String baseUrl = "http://50.19.179.31:9090/jenkinsmanager/index.html";
 		private  static WebDriver driver;
 		
 		
