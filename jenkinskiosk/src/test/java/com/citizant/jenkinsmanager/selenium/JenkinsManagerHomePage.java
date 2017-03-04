@@ -18,9 +18,29 @@ package com.citizant.jenkinsmanager.selenium;
 		private static String startPage = "http://50.19.179.31:9090/jenkinsmanager/index.html";
 		private  static WebDriver driver;
 		
+		
+	
 		@BeforeClass
 		public static void setUpDriver() throws IOException
-		{								
+		{	
+			String hub =  System.getProperty("selenium.hub");
+		if(hub == null) {
+			hub  = seleniumHub;
+		}
+		
+		String base = System.getProperty("app.baseurl");
+		if(base == null) {
+			base = baseUrl;
+		}
+		System.out.println("Selenium HUB : "  + hub);
+		System.out.println("The app URL : "  + base);
+		  
+	    URL hubUrl = null;
+	    try{
+	    	hubUrl = new URL(hub);
+	    }catch(Exception e){
+	    	
+	    }
 		    Capabilities cap = DesiredCapabilities.firefox();	    
 		    driver = new RemoteWebDriver(new URL(seleniumHub),cap);	   
 		}
