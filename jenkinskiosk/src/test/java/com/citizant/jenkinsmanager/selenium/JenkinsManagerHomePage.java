@@ -49,7 +49,7 @@ package com.citizant.jenkinsmanager.selenium;
 		
 				    
 		    public void testSeleniumInfrastructure() throws IOException, InterruptedException {   
-			driver.get(baseUrl);
+			driver.get(base);
 			Assert.assertEquals(driver.getTitle(),"Jenkins Kiosk");
 		    
 		    /*
