@@ -1,0 +1,5 @@
+---
+- hosts: Application
+  tasks:
+  - name: Deploy Docker based Jenkins Kiosk App
+    script: deploy_container.sh
