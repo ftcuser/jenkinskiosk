@@ -50,7 +50,7 @@ package com.citizant.jenkinsmanager.selenium;
 				    
 		    public void testSeleniumInfrastructure() throws IOException, InterruptedException {   
 			driver.get(baseUrl);
-			Assert.assertEquals(driver.getTitle(),"Problem loading page");
+			Assert.assertEquals(driver.getTitle(),"Jenkins Kiosk");
 		    
 		    /*
 		    driver.findElement(By.id("email_id")).sendKeys("admin@kudo.com");
