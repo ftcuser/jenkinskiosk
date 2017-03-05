@@ -17,18 +17,20 @@ package com.citizant.jenkinsmanager.selenium;
 		private static String seleniumHub= "http://50.19.179.31:4444/wd/hub";
 		private static String baseUrl = "http://50.19.179.31:9090/jenkinsmanager/index.html";
 		private  static WebDriver driver;
+		private  static String hub;
+		private  static String base;
 		
 		
 	
 		@BeforeClass
 		public static void setUpDriver() throws IOException
 		{	
-			String hub =  System.getProperty("selenium.hub");
+			 hub =  System.getProperty("selenium.hub");
 		if(hub == null) {
 			hub  = seleniumHub;
 		}
 		
-		String base = System.getProperty("app.baseurl");
+		 base = System.getProperty("app.baseurl");
 		if(base == null) {
 			base = baseUrl;
 		}
