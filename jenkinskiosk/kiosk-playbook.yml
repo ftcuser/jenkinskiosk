@@ -1,0 +1,5 @@
+---
+  - name: Deploy Docker based Jenkins Kiosk App
+    hosts: Application
+    roles:
+     - deploy

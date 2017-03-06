@@ -1,56 +1,36 @@
 package com.citizant.jenkinsmanager.selenium;
 
-import static org.junit.Assert.assertEquals;
+	import java.io.IOException;
+	import java.net.URL;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+	import org.junit.AfterClass;
+	import org.junit.Assert;
+	import org.junit.BeforeClass;
+	import org.junit.Test;
+	import org.openqa.selenium.By;
+	import org.openqa.selenium.Capabilities;
+	import org.openqa.selenium.WebDriver;
+	import org.openqa.selenium.remote.RemoteWebDriver;
+	import org.openqa.selenium.remote.DesiredCapabilities;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-
-public class JenkinsManagerHomePage {
-	  private WebDriver driver;
-	  private ScreenshotHelper screenshotHelper;
-	  private WebDriverWait driverWait;
-	  
-	  private WebElement addUserButton;
-	  private WebElement emailField;
-	  private WebElement firstNameField;
-	  private WebElement lastNameField;
-	  private WebElement addButton;
-	  
-	  private String seleniumHub = "http://192.168.60.135:4444/wd/hub";
-	  private String baseUrl =  "http://192.168.60.135:8080/usermanager";
-
-	  
-	  @Before
-	  public void openBrowser() {
-	  
-	   // driver = new ChromeDriver();
-	    //driver = new HtmlUnitDriver();
-	    //((HtmlUnitDriver)driver).setJavascriptEnabled(true);
-		  
-		//try to get Selenium HUB and bas test URL from JVM parameters
-		//This should set on Jenkins
-		String hub =  System.getProperty("selenium.hub");
+	public class JenkinsManagerHomePage {
+		private static String seleniumHub= "http://50.19.179.31:4444/wd/hub";
+		private static String baseUrl = "http://50.19.179.31:9090/jenkinsmanager/index.html";
+		private  static WebDriver driver;
+		private  static String hub;
+		private  static String base;
+		
+		
+	
+		@BeforeClass
+		public static void setUpDriver() throws IOException
+		{	
+			 hub =  System.getProperty("selenium.hub");
 		if(hub == null) {
 			hub  = seleniumHub;
 		}
 		
-		String base = System.getProperty("app.baseurl");
+		 base = System.getProperty("app.baseurl");
 		if(base == null) {
 			base = baseUrl;
 		}
@@ -63,39 +43,33 @@ public class JenkinsManagerHomePage {
 	    }catch(Exception e){
 	    	
 	    }
-	    
-	    Capabilities cap = DesiredCapabilities.chrome();
-	    driver = new RemoteWebDriver(hubUrl, cap);
-	    driverWait = new WebDriverWait(driver, 30);
-	    driver.get(base);
-	   // screenshotHelper = new ScreenshotHelper();
-	  }
-	  
-	  @After
-	  public void saveScreenshotAndCloseBrowser() throws IOException {
-	   // screenshotHelper.saveScreenshot("screenshot.png");
-	    driver.quit();
-	  }
-	  
-	  @Test
-	  public void pageTitleAfterSearchShouldBeginWithDrupal() throws IOException {
-		System.out.println("Page Title : " + driver.getTitle());
-	    assertEquals("The page title should equal Jenkins Kiosk at the start of the test.", "Jenkins Kiosk", driver.getTitle());
-	    
-	
-	    /*
-	    WebElement searchField = driver.findElement(By.name("q"));
-	    searchField.sendKeys("Drupal!");
-	    searchField.submit();
-	    */
-	  }
-	  
-	  private class ScreenshotHelper {
-	  
-	    public void saveScreenshot(String screenshotFileName) throws IOException {
-	      File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-	      FileUtils.copyFile(screenshot, new File(screenshotFileName));
-	    }
-	  }
-
+		    Capabilities cap = DesiredCapabilities.firefox();	    
+		    driver = new RemoteWebDriver(new URL(seleniumHub),cap);	   
+		}
+			   
+		@Test	
+		
+				    
+		    public void testSeleniumInfrastructure() throws IOException, InterruptedException {   
+			driver.get(base);
+			Assert.assertEquals(driver.getTitle(),"Jenkins Kiosk");
+		    
+		    /*
+		    driver.findElement(By.id("email_id")).sendKeys("admin@kudo.com");
+		    driver.findElement(By.id("password_id")).sendKeys("12345");
+		    driver.findElement(By.id("btnSubmit")).click();
+		    
+		   // Assert.assertEquals(driver.getTitle(),"Flash");
+		    //driver.findElement(By.linkText("Add a User")).click();
+		    String URL = driver.getCurrentUrl();
+		    Assert.assertEquals(URL, "http://50.19.150.209:8090/kudos/servlet/home/doLogin");
+		    */
+		}
+		    
+		    @AfterClass	    
+			public static void  tearDownDriver(){	
+				driver.quit();
+				
+		}
 }
+

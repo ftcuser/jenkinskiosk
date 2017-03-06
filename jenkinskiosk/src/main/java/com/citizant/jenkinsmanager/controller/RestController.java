@@ -7,12 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -21,8 +19,7 @@ import com.citizant.jenkinsmanager.bean.JenkinsJob;
 import com.citizant.jenkinsmanager.bean.JenkinsNode;
 import com.citizant.jenkinsmanager.bean.JenkinsView;
 import com.citizant.jenkinsmanager.service.JenkinsService;
-import com.offbytwo.jenkins.model.Job;
-import com.offbytwo.jenkins.model.JobWithDetails;
+
 
 
 
@@ -105,5 +102,13 @@ public class RestController extends AbstractController {
 			@PathVariable int buildNumber){		
 		
 		return jenkinsService.getBuildDetail(projectId, jobName, buildNumber);
+	}
+	
+	@RequestMapping("/startpipline/{projectId}/{jobName}")
+	@ResponseBody
+	public JenkinsBuild startJenkinsPipeline(@PathVariable String projectId, 
+			@PathVariable String jobName){		
+		
+		return jenkinsService.startBuild(projectId, jobName, 100);
 	}
 }

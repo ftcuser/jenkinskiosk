@@ -150,6 +150,7 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 			Iterator<String> keys = jobMap.keySet().iterator();
 
 			while (keys.hasNext()) {
+				try{
 				JobWithDetails jd = jobMap.get(keys.next()).details();
 				List<Build> builds = jd.getAllBuilds();
 				for (Build b : builds) {
@@ -172,6 +173,9 @@ public class JenkinsReportServiceImpl implements JenkinsReportService {
 						ds.setNumOfFailed(ds.getNumOfFailed() + 1);
 					}
 					bumap.put(bdate, bds);
+				}
+				}catch(Exception e) {
+					e.printStackTrace();
 				}
 			}
 
