@@ -1,0 +1,102 @@
+node {
+    def mvnHome
+    def sonarqubeHome
+    def projectDir
+    def appDir
+    def imageBuild
+    def environment
+    def productName
+    def appName
+    
+    stage('Checkout & Prepare') {
+        mvnHome = tool 'Mave3'
+        sonarqubeHome = tool name: 'SonarQube Runner 2.4', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        rootJobFolder = 'Kiosk2'
+        jobBaseName = 'Kiosk'
+        projectDir = 'jenkinskiosk'
+        appDir = 'jenkinskiosk'
+        environment = "dev"
+        productName = "uscis"
+        appName = "kiosk"
+        imageBuild = env.BUILD_NUMBER
+        
+        dir(projectDir) {
+            checkout([$class: 'GitSCM', 
+                branches: [[name: '*/master']], 
+                doGenerateSubmoduleConfigurations: false, 
+                extensions: [[$class: 'CleanCheckout']], 
+                submoduleCfg: [], 
+                userRemoteConfigs: [[url: 'http://github.com/ftcuser/jenkinskiosk.git']]
+            ])
+        }
+        dir('docker-tasks') {
+            checkout([$class: 'GitSCM', 
+                branches: [[name: '*/master']], 
+                doGenerateSubmoduleConfigurations: false, 
+                extensions: [[$class: 'CleanCheckout']], 
+                submoduleCfg: [], 
+                userRemoteConfigs: [[credentialsId: 'jenkins-codecommit-ssh', url: 'ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/docker-tasks']]
+            ])            
+        }
+    }
+    
+    stage('Build & Test WAR') {
+        dir("${projectDir}/${appDir}") {
+            sh "'${mvnHome}/bin/mvn' package"
+            //junit 'target/surefire-reports/TEST-*.xml'
+            archiveArtifacts artifacts: "target/*.war", fingerprint: true
+        }
+    }
+    
+    stage('Code Quality Scan') {
+        dir(projectDir) {
+            withSonarQubeEnv('SonarQube') {
+                sh """${sonarqubeHome}/bin/sonar-runner -e \\
+    -Dsonar.host.url=$SONAR_HOST_URL \\
+    -Dsonar.projectKey=${productName}.${appName}:${appName} \\
+    -Dsonar.projectName=${appName} \\
+    -Dsonar.projectVersion=1.0 \\
+    -Dsonar.sources=${appDir}/src/main/java \\
+    -Dsonar.language=java \\
+    -Dsonar.sourceEncoding=UTF-8"""
+            }
+        }
+    }
+    
+    stage('Build, Test & Publish Docker Image') {
+        dir("${projectDir}/${appDir}") {
+            sh """export AWS_REGION=us-east-1
+	bundle &&
+	bundle exec rake IMAGE_VERSION=${env.BUILD_NUMBER} build verify publish
+"""
+            archiveArtifacts artifacts: "image.json", fingerprint: true
+        }
+    }
+    
+	stage ("Deploy on ECS") {
+	    echo "IMAGE_BUILD_NUMBER: ${imageBuild}"
+	    
+		build job: "${rootJobFolder}/ECS/${jobBaseName} - DEPLOY",
+		      parameters: [
+		          [$class: 'StringParameterValue',
+		           name: 'IMAGE_BUILD_NUMBER',
+		           value: imageBuild]
+		      ]
+		step ([$class: 'CopyArtifact',
+		       projectName: "${rootJobFolder}/ECS/${jobBaseName} - DEPLOY",
+               filter: "${appName}.json,${appName}.env"]);
+        archiveArtifacts artifacts: "${appName}.json,${appName}.env", fingerprint: true
+	}
+	
+	stage ("Test on ECS") {
+	    build "${rootJobFolder}/VerifyNow"
+	}
+	
+	input "Click Ok to proceed"
+
+	stage ("Destroy on ECS") {
+		build "${rootJobFolder}/ECS/${jobBaseName} - DESTROY"
+	}
+
+	echo "Pipeline Completed"
+}
