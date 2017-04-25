@@ -39,7 +39,7 @@ public class RestController extends AbstractController {
 	public  List<JenkinsNode> listJenkinsNodes(HttpServletRequest request){		
 		List<JenkinsNode> nodes = jenkinsService.getJenkinsNodes();
 		//List<JenkinsNode> nodes = jenkinsService.getLocalNodes(request.getSession()
-		//		.getServletContext().getRealPath("/WEB-INF/jenkins-servers.json"));
+			//	.getServletContext().getRealPath("/WEB-INF/jenkins-servers.json"));
 		return nodes;
 	}
 	
